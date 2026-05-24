@@ -9,12 +9,26 @@ class UserController {
         $this->user = new User($db);
     }
 
-    public function register($fullname, $email, $password) {
-        return $this->user->create($fullname, $email, $password);
+    public function register($fullname, $email, $password, $phone = null) {
+        return $this->user->create($fullname, $email, $password, $phone);
     }
 
     public function login($email) {
         return $this->user->login($email);
+    }
+
+    public function authenticate($email, $password) {
+        $user = $this->user->findByEmail($email);
+
+        if (!$user || !password_verify($password, $user['password'])) {
+            return false;
+        }
+
+        if (($user['status'] ?? 'active') !== 'active') {
+            return false;
+        }
+
+        return $user;
     }
 
     public function getUsers() {

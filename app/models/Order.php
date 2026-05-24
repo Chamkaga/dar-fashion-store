@@ -7,12 +7,41 @@ class Order {
         $this->conn = $db;
     }
 
-    public function create($user_id, $total) {
+    public function create($user_id, $total, $customer = []) {
+        $orderNumber = $customer['order_number'] ?? ('DFS-' . date('YmdHis'));
+        $customerName = $customer['customer_name'] ?? 'Registered Customer';
+        $customerEmail = $customer['customer_email'] ?? 'customer@example.com';
+        $customerPhone = $customer['customer_phone'] ?? '+255700000000';
+        $shippingAddress = $customer['shipping_address'] ?? 'Dar es Salaam';
+        $deliveryFee = $customer['delivery_fee'] ?? 0;
+        $subtotal = $customer['subtotal'] ?? $total;
+
         $stmt = $this->conn->prepare("
-            INSERT INTO orders (user_id, total, status) 
-            VALUES (?, ?, 'pending')
+            INSERT INTO orders (
+                order_number,
+                user_id,
+                customer_name,
+                customer_email,
+                customer_phone,
+                shipping_address,
+                subtotal,
+                delivery_fee,
+                total,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
-        $stmt->execute([$user_id, $total]);
+        $stmt->execute([
+            $orderNumber,
+            $user_id,
+            $customerName,
+            $customerEmail,
+            $customerPhone,
+            $shippingAddress,
+            $subtotal,
+            $deliveryFee,
+            $total
+        ]);
         return $this->conn->lastInsertId();
     }
 

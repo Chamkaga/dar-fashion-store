@@ -7,7 +7,21 @@ class Payment {
         $this->conn = $db;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     public function create($order_id, $method, $amount) {
+        $allowedMethods = [
+            'Mobile Money' => 'mobile_money',
+            'Card Payment' => 'card_demo',
+            'Cash on Delivery' => 'cash_on_delivery',
+            'mobile_money' => 'mobile_money',
+            'card_demo' => 'card_demo',
+            'cash_on_delivery' => 'cash_on_delivery'
+        ];
+        $method = $allowedMethods[$method] ?? 'mobile_money';
+
         $stmt = $this->conn->prepare("
             INSERT INTO payments (order_id, method, amount, payment_status)
             VALUES (?, ?, ?, 'pending')

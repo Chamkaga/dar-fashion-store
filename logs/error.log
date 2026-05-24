@@ -1,0 +1,5 @@
+Dar Fashion Store error log.
+
+Development note:
+- PHP database connection errors are written through error_log().
+- Keep this file for troubleshooting during local presentation.

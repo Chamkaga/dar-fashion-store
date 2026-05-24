@@ -19,38 +19,49 @@ class OrderController {
         $this->payment = new Payment($db);
     }
 
-    public function createOrder($user_id, $cart, $payment_method) {
+    public function createOrder($user_id, $cart, $payment_method, $customer = []) {
 
         $total = 0;
 
         // 1. Calculate total
         foreach ($cart as $product_id => $qty) {
             $product = $this->product->getById($product_id);
-            $total += $product['price'] * $qty;
+            $price = $product['sale_price'] ?: $product['price'];
+            $total += $price * $qty;
         }
 
         // 2. Create order
-        $order_id = $this->order->create($user_id, $total);
+        $deliveryFee = $customer['delivery_fee'] ?? 5000;
+        $customer['subtotal'] = $total;
+        $customer['delivery_fee'] = $deliveryFee;
+        $order_id = $this->order->create($user_id, $total + $deliveryFee, $customer);
 
         // 3. Create order items + update stock
         foreach ($cart as $product_id => $qty) {
             $product = $this->product->getById($product_id);
+            $price = $product['sale_price'] ?: $product['price'];
 
-            $this->orderItem->addItem(
-                $order_id,
-                $product_id,
-                $qty,
-                $product['price']
-            );
+            $this->orderItem->addItem($order_id, $product_id, $qty, $price, $product['name']);
 
             // reduce stock
             $this->product->updateStock($product_id, $qty);
         }
 
         // 4. Create payment record
-        $this->payment->create($order_id, $payment_method, $total);
+        $this->payment->create($order_id, $payment_method, $total + $deliveryFee);
+        $this->createConfirmation($order_id, $customer);
 
         return $order_id;
+    }
+
+    private function createConfirmation($order_id, $customer) {
+        $stmt = $this->payment->getConnection()->prepare("
+            INSERT INTO order_confirmations (order_id, channel, recipient, subject, message, status, sent_at)
+            VALUES (?, 'email', ?, 'Dar Fashion Store Order Confirmation', ?, 'sent', NOW())
+        ");
+        $recipient = $customer['customer_email'] ?? 'customer@example.com';
+        $message = 'Thank you for shopping with Dar Fashion Store. Your order has been received and payment is recorded as a secure demo transaction.';
+        $stmt->execute([$order_id, $recipient, $message]);
     }
 
     public function updateStatus($order_id, $status) {

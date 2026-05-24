@@ -7,13 +7,22 @@ class OrderItem {
         $this->conn = $db;
     }
 
-    public function addItem($order_id, $product_id, $quantity, $price) {
+    public function addItem($order_id, $product_id, $quantity, $price, $product_name = null) {
+        if ($product_name === null) {
+            $productStmt = $this->conn->prepare("SELECT name FROM products WHERE id = ?");
+            $productStmt->execute([$product_id]);
+            $product = $productStmt->fetch(PDO::FETCH_ASSOC);
+            $product_name = $product['name'] ?? 'Product';
+        }
+
+        $line_total = $quantity * $price;
+
         $stmt = $this->conn->prepare("
-            INSERT INTO order_items (order_id, product_id, quantity, price)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO order_items (order_id, product_id, product_name, quantity, price, line_total)
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
 
-        return $stmt->execute([$order_id, $product_id, $quantity, $price]);
+        return $stmt->execute([$order_id, $product_id, $product_name, $quantity, $price, $line_total]);
     }
 
     public function getItemsByOrder($order_id) {

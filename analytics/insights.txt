@@ -1,0 +1,13 @@
+DAR FASHION STORE - ANALYTICS INSIGHTS
+
+Key metrics for the assignment demo:
+- Total revenue is calculated from the orders table.
+- Product performance is calculated from order_items.
+- Payment status is tracked in payments.
+- Customer growth is tracked from users.
+- Newsletter growth is tracked from newsletter_subscribers.
+
+Recommended future improvements:
+- Add date filters for daily, weekly, and monthly sales.
+- Export reports to PDF or Excel.
+- Add charts for revenue, best-selling products, and customer growth.
