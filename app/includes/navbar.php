@@ -12,11 +12,7 @@ $loggedInUser = current_user();
             </div>
             <nav class="topbar__links" aria-label="Utility navigation">
                 <a href="<?php echo $navBase; ?>/public/contact.php">Help</a>
-<<<<<<< HEAD
                 <a href="<?php echo $navBase; ?>/public/track-order.php">Track Order</a>
-=======
-                <a href="<?php echo $navBase; ?>/public/profile.php#orders">Track Order</a>
->>>>>>> dffcd92dcb69c10beb0fb71be3046d8012e923b0
                 <?php if ($loggedInUser): ?>
                     <a href="<?php echo $navBase; ?>/public/logout.php">Logout</a>
                 <?php else: ?>
@@ -43,11 +39,7 @@ $loggedInUser = current_user();
             <nav class="action-nav" aria-label="Account actions">
                 <a href="<?php echo $navBase; ?>/public/cart.php">Cart <strong><?php echo (int) $cartCount; ?></strong></a>
                 <a href="<?php echo $navBase; ?>/public/shop.php?wishlist=1">Wishlist</a>
-<<<<<<< HEAD
-                <a href="<?php echo $navBase; ?>/public/profile.php"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
-=======
                 <a href="<?php echo $navBase; ?>/public/<?php echo $loggedInUser ? 'profile.php' : 'login.php'; ?>"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
->>>>>>> dffcd92dcb69c10beb0fb71be3046d8012e923b0
             </nav>
 
             <button class="mobile-menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="category-menu">
