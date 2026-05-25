@@ -4,6 +4,27 @@ require_admin('../login.php');
 require_once __DIR__ . '/../../app/config/db.php';
 $conn = (new Database())->connect();
 $id = (int) ($_GET['id'] ?? 0);
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $conn) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $message = 'Security token expired. Please try again.';
+    } else {
+        $status = $_POST['status'] ?? 'pending';
+        $allowed = ['pending', 'confirmed', 'processing', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled'];
+        if (!in_array($status, $allowed, true)) {
+            $status = 'pending';
+        }
+        try {
+            $stmt = $conn->prepare("UPDATE orders SET status = ?, delivery_company = ?, delivery_notes = ?, estimated_delivery_days = ? WHERE id = ?");
+            $stmt->execute([$status, trim($_POST['delivery_company'] ?? ''), trim($_POST['delivery_notes'] ?? ''), (int) ($_POST['estimated_delivery_days'] ?? 1), $id]);
+            $message = 'Tracking updated successfully.';
+        } catch (Throwable $e) {
+            $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
+            $stmt->execute([$status, $id]);
+            $message = 'Status updated. Add tracking columns from database/ecommerce.sql for delivery notes and courier fields.';
+        }
+    }
+}
 $stmt = $conn->prepare("SELECT * FROM orders WHERE id=?");
 $stmt->execute([$id]);
 $order = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,11 +44,31 @@ if ($order) {
 <body><main class="section"><div class="container">
 <?php if ($order): ?>
 <div class="section-heading"><p class="section-kicker">Order details</p><h1><?php echo htmlspecialchars($order['order_number']); ?></h1></div>
+<?php if ($message): ?><p class="alert alert--success"><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
 <section class="summary-panel">
     <p><span>Customer</span><strong><?php echo htmlspecialchars($order['customer_name']); ?></strong></p>
     <p><span>Email</span><strong><?php echo htmlspecialchars($order['customer_email']); ?></strong></p>
     <p><span>Payment</span><strong><?php echo htmlspecialchars($payment['method'] ?? 'pending'); ?></strong></p>
+    <p><span>Phone</span><strong><?php echo htmlspecialchars($order['customer_phone']); ?></strong></p>
+    <p><span>Location</span><strong><?php echo htmlspecialchars($order['shipping_address']); ?></strong></p>
     <p class="summary-total"><span>Total</span><strong>TZS <?php echo number_format((float) $order['total'], 0); ?></strong></p>
+</section>
+<section class="admin-panel">
+    <h2>Update Tracking</h2>
+    <form class="admin-form-grid" method="post">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+        <label>Delivery Status
+            <select name="status">
+                <?php foreach (['pending' => 'Order Placed', 'confirmed' => 'Payment Confirmed', 'processing' => 'Processing Order', 'shipped' => 'Shipped', 'in_transit' => 'In Transit', 'out_for_delivery' => 'Out for Delivery', 'delivered' => 'Delivered', 'cancelled' => 'Cancelled'] as $key => $label): ?>
+                    <option value="<?php echo $key; ?>" <?php echo ($order['status'] === $key) ? 'selected' : ''; ?>><?php echo htmlspecialchars($label); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <label>Delivery Company<input name="delivery_company" value="<?php echo htmlspecialchars($order['delivery_company'] ?? ''); ?>" placeholder="DHL, EMS, local courier"></label>
+        <label>Estimated Delivery Days<input type="number" min="1" name="estimated_delivery_days" value="<?php echo (int) ($order['estimated_delivery_days'] ?? 1); ?>"></label>
+        <label class="admin-form-grid__wide">Delivery Notes<textarea name="delivery_notes" rows="3" placeholder="Package left Dar es Salaam warehouse."><?php echo htmlspecialchars($order['delivery_notes'] ?? ''); ?></textarea></label>
+        <button class="button button--primary" type="submit">Save Tracking Update</button>
+    </form>
 </section>
 <div class="cart-table">
     <div class="cart-row cart-row--head"><span>Product</span><span>Qty</span><span>Price</span><span>Total</span><span>Status</span></div>

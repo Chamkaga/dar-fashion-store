@@ -19,7 +19,7 @@
         <section>
             <h2>Support</h2>
             <a href="<?php echo $footerBase; ?>/public/contact.php">Help Center</a>
-            <a href="<?php echo $footerBase; ?>/public/order-success.php">Track Order</a>
+            <a href="<?php echo $footerBase; ?>/public/track-order.php">Track Order</a>
             <a href="<?php echo $footerBase; ?>/public/checkout.php">Checkout</a>
         </section>
 
@@ -30,7 +30,11 @@
                 <input id="footer-email" type="email" placeholder="Email address">
                 <button type="submit">Join</button>
             </form>
-            <p class="social-links">Instagram | Facebook | WhatsApp</p>
+            <p class="social-links">
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
+                <a href="https://wa.me/255700000000" target="_blank" rel="noopener">WhatsApp</a>
+            </p>
         </section>
     </div>
     <div class="footer-bottom">

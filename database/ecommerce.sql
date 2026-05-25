@@ -13,6 +13,8 @@ USE fashion_storedb;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS order_confirmations;
+DROP TABLE IF EXISTS delivery_regions;
+DROP TABLE IF EXISTS store_settings;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS newsletter_subscribers;
 DROP TABLE IF EXISTS messages;
@@ -124,7 +126,10 @@ CREATE TABLE orders (
     subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     delivery_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     total DECIMAL(10,2) NOT NULL,
-    status ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'confirmed', 'processing', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
+    delivery_company VARCHAR(120),
+    delivery_notes TEXT,
+    estimated_delivery_days INT UNSIGNED NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_orders_user
@@ -229,6 +234,30 @@ CREATE TABLE order_confirmations (
 ) ENGINE=InnoDB;
 
 -- =========================================
+-- DELIVERY REGIONS TABLE
+-- Supports Tanzania delivery fee and ETA rules.
+-- =========================================
+CREATE TABLE delivery_regions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    region_name VARCHAR(100) NOT NULL UNIQUE,
+    delivery_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    estimated_days VARCHAR(40) NOT NULL,
+    delivery_method VARCHAR(120) NOT NULL DEFAULT 'Courier',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================
+-- STORE SETTINGS TABLE
+-- Simple key/value settings for store identity and payment configuration.
+-- =========================================
+CREATE TABLE store_settings (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(120) NOT NULL UNIQUE,
+    setting_value TEXT,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================
 -- CONTACT MESSAGES TABLE
 -- Stores contact/about page messages.
 -- =========================================
@@ -315,7 +344,7 @@ INSERT INTO product_images (product_id, image_url, alt_text, sort_order) VALUES
 INSERT INTO orders
 (order_number, user_id, customer_name, customer_email, customer_phone, shipping_address, subtotal, delivery_fee, total, status)
 VALUES
-('DFS-1001', 2, 'Amina Hassan', 'amina@example.com', '+255711111111', 'Mikocheni, Dar es Salaam', 120000.00, 5000.00, 125000.00, 'confirmed');
+('DFS-1001', 2, 'Amina Hassan', 'amina@example.com', '+255711111111', 'Mikocheni, Dar es Salaam', 120000.00, 5000.00, 125000.00, 'processing');
 
 INSERT INTO order_items (order_id, product_id, product_name, quantity, price, line_total) VALUES
 (1, 1, 'Linen Summer Dress', 1, 48000.00, 48000.00),
@@ -326,6 +355,24 @@ INSERT INTO payments (order_id, method, amount, payment_status, transaction_ref,
 
 INSERT INTO order_confirmations (order_id, channel, recipient, subject, message, status, sent_at) VALUES
 (1, 'email', 'amina@example.com', 'Dar Fashion Store Order Confirmation', 'Thank you for your order DFS-1001. Your payment has been verified and your items are being prepared.', 'sent', NOW());
+
+UPDATE orders
+SET delivery_company = 'Dar Express Courier',
+    delivery_notes = 'Payment verified. Items are being prepared at the Dar es Salaam warehouse.',
+    estimated_delivery_days = 1
+WHERE order_number = 'DFS-1001';
+
+INSERT INTO delivery_regions (region_name, delivery_fee, estimated_days, delivery_method) VALUES
+('Dar es Salaam', 5000.00, '1 day', 'Local courier'),
+('Morogoro', 8000.00, '2 days', 'Road courier'),
+('Mwanza', 12000.00, '3-4 days', 'Road courier'),
+('Zanzibar', 10000.00, '2 days', 'Sea delivery');
+
+INSERT INTO store_settings (setting_key, setting_value) VALUES
+('store_name', 'Dar Fashion Store'),
+('contact_phone', '+255700000000'),
+('contact_email', 'info@darfashion.store'),
+('payment_methods', 'M-Pesa, Card Demo, Cash on Delivery');
 
 INSERT INTO messages (name, email, phone, subject, message) VALUES
 ('Neema John', 'neema@example.com', '+255722222222', 'Product size question', 'Do you have the Linen Summer Dress in medium size?');

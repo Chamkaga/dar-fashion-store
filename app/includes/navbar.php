@@ -12,7 +12,7 @@ $loggedInUser = current_user();
             </div>
             <nav class="topbar__links" aria-label="Utility navigation">
                 <a href="<?php echo $navBase; ?>/public/contact.php">Help</a>
-                <a href="<?php echo $navBase; ?>/public/order-success.php">Track Order</a>
+                <a href="<?php echo $navBase; ?>/public/track-order.php">Track Order</a>
                 <?php if ($loggedInUser): ?>
                     <a href="<?php echo $navBase; ?>/public/logout.php">Logout</a>
                 <?php else: ?>
@@ -39,7 +39,7 @@ $loggedInUser = current_user();
             <nav class="action-nav" aria-label="Account actions">
                 <a href="<?php echo $navBase; ?>/public/cart.php">Cart <strong><?php echo (int) $cartCount; ?></strong></a>
                 <a href="<?php echo $navBase; ?>/public/shop.php?wishlist=1">Wishlist</a>
-                <a href="<?php echo $navBase; ?>/public/login.php"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
+                <a href="<?php echo $navBase; ?>/public/profile.php"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
             </nav>
 
             <button class="mobile-menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="category-menu">

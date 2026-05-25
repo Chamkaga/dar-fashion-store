@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && ($user['role'] ?? '') === 'admin') {
             login_user($user);
-            header('Location: index.php');
+            header('Location: dashboard.php');
             exit;
         }
 

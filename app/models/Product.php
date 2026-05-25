@@ -47,9 +47,18 @@ class Product {
         $params = [];
 
         if ($search !== '') {
-            $sql .= " AND (products.name LIKE ? OR products.description LIKE ?)";
-            $params[] = '%' . $search . '%';
-            $params[] = '%' . $search . '%';
+            $sql .= " AND (
+                products.name LIKE ?
+                OR products.description LIKE ?
+                OR products.sku LIKE ?
+                OR products.size_options LIKE ?
+                OR products.color_options LIKE ?
+                OR categories.name LIKE ?
+                OR categories.slug LIKE ?
+            )";
+            for ($i = 0; $i < 7; $i++) {
+                $params[] = '%' . $search . '%';
+            }
         }
 
         if ($category !== '') {

@@ -48,7 +48,7 @@ if ($conn) {
             <div class="section-heading section-heading--row">
                 <div>
                     <p class="section-kicker">Products grid</p>
-                    <h2>Browse fashion products</h2>
+                    <h2><?php echo $search ? 'Search results for "' . htmlspecialchars($search) . '"' : 'Browse fashion products'; ?></h2>
                 </div>
                 <form method="get" class="sort-form">
                     <input type="hidden" name="q" value="<?php echo htmlspecialchars($search); ?>">

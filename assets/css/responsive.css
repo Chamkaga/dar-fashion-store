@@ -14,7 +14,8 @@
     .shop-layout,
     .cart-layout,
     .checkout-layout,
-    .product-detail {
+    .product-detail,
+    .profile-layout {
         grid-template-columns: 1fr;
     }
 
@@ -29,6 +30,10 @@
     }
 
     .filter-panel {
+        position: static;
+    }
+
+    .profile-card {
         position: static;
     }
 
@@ -127,6 +132,12 @@
 
     .admin-content {
         padding: 22px 14px;
+    }
+
+    .admin-chart-grid,
+    .admin-grid-two,
+    .admin-form-grid {
+        grid-template-columns: 1fr;
     }
 }
 
