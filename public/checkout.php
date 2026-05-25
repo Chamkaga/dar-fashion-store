@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <main class="section">
     <div class="container checkout-layout">
-        <form class="checkout-form" action="order-success.php" method="post">
+        <form class="checkout-form" action="checkout.php" method="post">
             <div class="section-heading">
                 <p class="section-kicker">Checkout</p>
                 <h1>Billing and shipping</h1>

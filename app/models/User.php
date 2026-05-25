@@ -31,6 +31,23 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function findById($id) {
+        $sql = "SELECT id, fullname, email, phone, role, status, created_at FROM users WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([":id" => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateProfile($id, $fullname, $phone) {
+        $sql = "UPDATE users SET fullname = :fullname, phone = :phone WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ":fullname" => $fullname,
+            ":phone" => $phone,
+            ":id" => $id
+        ]);
+    }
+
     public function login($email) {
         return $this->findByEmail($email);
     }

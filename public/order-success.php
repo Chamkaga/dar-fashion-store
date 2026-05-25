@@ -28,6 +28,7 @@ if ($conn && $orderId > 0) {
             <p>Total: <strong>TZS <?php echo number_format((float) $order['total'], 0); ?></strong></p>
             <p>Payment: <strong><?php echo htmlspecialchars($payment['method'] ?? 'demo'); ?></strong> / <strong><?php echo htmlspecialchars($payment['payment_status'] ?? 'pending'); ?></strong></p>
             <p>A demo confirmation message has been saved in the database.</p>
+            <p><a href="profile.php#orders">Track this order from your customer profile</a></p>
         <?php else: ?>
             <p>Your order has been received. We will send confirmation and delivery updates to your contact details.</p>
         <?php endif; ?>
