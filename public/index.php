@@ -73,12 +73,18 @@ if ($conn) {
             </section>
 
             <aside class="hero-panel">
-                <h2>Welcome back</h2>
-                <p>Sign in for faster checkout, order tracking, and wishlist saves.</p>
-                <a class="button button--dark" href="login.php">Login</a>
                 <div class="deal-box">
-                    <strong>Today Deals</strong>
-                    <span>Up to 35% off selected styles</span>
+                    <div class="deal-marquee" aria-label="Today deals">
+                        <span><strong>Today Deals</strong> Up to 35% off selected styles</span>
+                    </div>
+                </div>
+                <div class="hero-style-slider" data-style-slider>
+                    <img class="hero-panel__image is-active" src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=700&q=80" alt="Elegant fashion outfit">
+                    <img class="hero-panel__image" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=700&q=80" alt="Streetwear fashion style">
+                    <img class="hero-panel__image" src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=700&q=80" alt="Casual dress fashion style">
+                    <img class="hero-panel__image" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80" alt="Runway inspired fashion style">
+                    <button class="slider-arrow slider-arrow--prev" type="button" data-slider-prev aria-label="Previous style">&lt;</button>
+                    <button class="slider-arrow slider-arrow--next" type="button" data-slider-next aria-label="Next style">&gt;</button>
                 </div>
             </aside>
         </div>

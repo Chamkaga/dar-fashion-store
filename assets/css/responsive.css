@@ -14,7 +14,10 @@
     .shop-layout,
     .cart-layout,
     .checkout-layout,
-    .product-detail {
+    .product-detail,
+    .account-layout,
+    .admin-grid,
+    .admin-grid--wide {
         grid-template-columns: 1fr;
     }
 
@@ -63,6 +66,23 @@
 
     .admin-sidebar nav {
         grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+
+    .dashboard-kpis,
+    .status-shortcuts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-hero {
+        grid-template-columns: auto 1fr;
+    }
+
+    .profile-action {
+        grid-column: span 2;
+    }
+
+    .account-menu {
+        position: static;
     }
 }
 
@@ -128,6 +148,24 @@
     .admin-content {
         padding: 22px 14px;
     }
+
+    .admin-topline,
+    .admin-status-form,
+    .order-card__head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .tracking-line,
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+
+    .tracking-step {
+        grid-template-columns: 42px 1fr;
+        justify-items: start;
+        text-align: left;
+    }
 }
 
 @media (max-width: 460px) {
@@ -152,5 +190,17 @@
 
     .product-card__title-row {
         align-items: center;
+    }
+
+    .dashboard-kpis,
+    .status-grid,
+    .status-shortcuts,
+    .quick-actions,
+    .profile-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-action {
+        grid-column: auto;
     }
 }

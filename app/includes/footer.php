@@ -19,7 +19,7 @@
         <section>
             <h2>Support</h2>
             <a href="<?php echo $footerBase; ?>/public/contact.php">Help Center</a>
-            <a href="<?php echo $footerBase; ?>/public/order-success.php">Track Order</a>
+            <a href="<?php echo $footerBase; ?>/public/profile.php#orders">Track Order</a>
             <a href="<?php echo $footerBase; ?>/public/checkout.php">Checkout</a>
         </section>
 

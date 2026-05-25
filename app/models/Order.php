@@ -46,8 +46,14 @@ class Order {
     }
 
     public function getByUser($user_id) {
-        $stmt = $this->conn->prepare("SELECT * FROM orders WHERE user_id = ?");
+        $stmt = $this->conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
         $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getItems($order_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
+        $stmt->execute([$order_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
