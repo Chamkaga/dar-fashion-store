@@ -52,39 +52,6 @@ CREATE TABLE users (
 ) ENGINE=InnoDB;
 
 -- =========================================
--- USER ACTIVITIES TABLE
--- Logs all user actions for admin monitoring and analytics.
--- Tracks: login, logout, product views, cart actions, orders, payments.
--- =========================================
-CREATE TABLE user_activities (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
-    activity_type ENUM('login', 'logout', 'view_product', 'add_to_cart', 'remove_from_cart', 'checkout', 'order_placed', 'payment_attempted', 'order_status_update') NOT NULL,
-    product_id INT UNSIGNED,
-    order_id INT UNSIGNED,
-    details JSON,
-    ip_address VARCHAR(45),
-    user_agent VARCHAR(500),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_user_activities_user
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT fk_user_activities_product
-        FOREIGN KEY (product_id) REFERENCES products(id)
-        ON UPDATE CASCADE
-        ON DELETE SET NULL,
-    CONSTRAINT fk_user_activities_order
-        FOREIGN KEY (order_id) REFERENCES orders(id)
-        ON UPDATE CASCADE
-        ON DELETE SET NULL,
-    INDEX idx_user_activities_user (user_id),
-    INDEX idx_user_activities_created_at (created_at),
-    INDEX idx_user_activities_type (activity_type),
-    INDEX idx_user_activities_order (order_id)
-) ENGINE=InnoDB;
-
--- =========================================
 -- CATEGORIES TABLE
 -- Supports category navigation and filtering.
 -- =========================================
@@ -367,6 +334,39 @@ CREATE TABLE order_confirmations (
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     INDEX idx_order_confirmations_order (order_id)
+) ENGINE=InnoDB;
+
+-- =========================================
+-- USER ACTIVITIES TABLE
+-- Logs all user actions for admin monitoring and analytics.
+-- Must be created after products and orders (foreign keys).
+-- =========================================
+CREATE TABLE user_activities (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    activity_type ENUM('login', 'logout', 'view_product', 'add_to_cart', 'remove_from_cart', 'checkout', 'order_placed', 'payment_attempted', 'order_status_update') NOT NULL,
+    product_id INT UNSIGNED,
+    order_id INT UNSIGNED,
+    details JSON,
+    ip_address VARCHAR(45),
+    user_agent VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_activities_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_user_activities_product
+        FOREIGN KEY (product_id) REFERENCES products(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    CONSTRAINT fk_user_activities_order
+        FOREIGN KEY (order_id) REFERENCES orders(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    INDEX idx_user_activities_user (user_id),
+    INDEX idx_user_activities_created_at (created_at),
+    INDEX idx_user_activities_type (activity_type),
+    INDEX idx_user_activities_order (order_id)
 ) ENGINE=InnoDB;
 
 -- =========================================

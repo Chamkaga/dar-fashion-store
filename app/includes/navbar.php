@@ -39,7 +39,11 @@ $loggedInUser = current_user();
             <nav class="action-nav" aria-label="Account actions">
                 <a href="<?php echo $navBase; ?>/public/cart.php">Cart <strong><?php echo (int) $cartCount; ?></strong></a>
                 <a href="<?php echo $navBase; ?>/public/shop.php?wishlist=1">Wishlist</a>
-                <a href="<?php echo $navBase; ?>/public/<?php echo $loggedInUser ? 'profile.php' : 'login.php'; ?>"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
+                <?php if ($loggedInUser && is_admin()): ?>
+                    <a href="<?php echo $navBase; ?>/admin/dashboard.php">Admin</a>
+                <?php else: ?>
+                    <a href="<?php echo $navBase; ?>/public/<?php echo $loggedInUser ? 'profile.php' : 'login.php'; ?>"><?php echo $loggedInUser ? htmlspecialchars($loggedInUser['fullname']) : 'Profile'; ?></a>
+                <?php endif; ?>
             </nav>
 
             <button class="mobile-menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="category-menu">

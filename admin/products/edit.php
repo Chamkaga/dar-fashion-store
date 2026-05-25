@@ -12,14 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $conn) {
     $message = 'Product updated.';
 }
 
-$stmt = $conn->prepare("SELECT * FROM products WHERE id=?");
-$stmt->execute([$id]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+$product = null;
+if ($conn) {
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id=?");
+    $stmt->execute([$id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Edit Product</title><link rel="stylesheet" href="../../assets/css/style.css"></head>
 <body><main class="section"><div class="container auth-page">
-<?php if ($product): ?>
+<?php if (!$conn): ?>
+<p class="alert alert--error">Database connection failed. Check your .env file and run php setup-database.php.</p>
+<?php elseif ($product): ?>
 <form class="auth-card" method="post">
     <p class="section-kicker">Admin</p><h1>Edit Product</h1>
     <?php if ($message): ?><p class="alert alert--success"><?php echo htmlspecialchars($message); ?></p><?php endif; ?>

@@ -34,7 +34,8 @@ if (!$product) {
 }
 
 $images = $product && $productModel ? $productModel->getImages($product['id']) : [];
-$mainImage = $product['image'] ?? 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=900&q=80';
+$defaultImage = 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=900&q=80';
+$mainImage = $product ? ($product['image'] ?: $defaultImage) : $defaultImage;
 $displayPrice = $product ? ($product['sale_price'] ?: $product['price']) : 0;
 ?>
 <main class="section">

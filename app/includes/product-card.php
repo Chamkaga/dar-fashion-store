@@ -5,8 +5,8 @@
     $rating = !empty($product['avg_rating']) ? number_format((float) $product['avg_rating'], 1) : ($product['rating'] ?? '4.8');
     $productUrl = isset($product['slug']) ? 'product.php?slug=' . urlencode($product['slug']) : 'product.php?name=' . urlencode($product['name']);
     ?>
-    <a href="<?php echo $productUrl; ?>">
-        <img src="<?php echo $product['image']; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+    <a href="<?php echo htmlspecialchars($productUrl); ?>">
+        <img src="<?php echo htmlspecialchars($product['image'] ?? ''); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
     </a>
     <div class="product-card__body">
         <div class="product-card__title-row">

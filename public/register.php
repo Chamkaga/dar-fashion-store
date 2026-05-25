@@ -8,6 +8,9 @@ require_once __DIR__ . '/../app/includes/auth.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = 'Security token expired. Please try again.';
+    } else {
     $fullname = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
@@ -39,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    }
 }
 
 include __DIR__ . '/../app/includes/header.php';
@@ -51,6 +55,7 @@ include __DIR__ . '/../app/includes/header.php';
             <p>Register once, then shop clothing, shoes, bags, and accessories with a smoother checkout experience.</p>
         </section>
         <form class="auth-card" action="register.php" method="post">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
             <p class="section-kicker">Customer account</p>
             <h1>Register</h1>
             <?php if ($error): ?>

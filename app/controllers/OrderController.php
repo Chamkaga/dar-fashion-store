@@ -4,6 +4,7 @@ require_once __DIR__ . "/../models/Order.php";
 require_once __DIR__ . "/../models/OrderItem.php";
 require_once __DIR__ . "/../models/Product.php";
 require_once __DIR__ . "/../models/Payment.php";
+require_once __DIR__ . "/../models/OrderTracking.php";
 
 class OrderController {
 
@@ -11,12 +12,16 @@ class OrderController {
     private $orderItem;
     private $product;
     private $payment;
+    private $tracking;
+    private $db;
 
     public function __construct($db) {
+        $this->db = $db;
         $this->order = new Order($db);
         $this->orderItem = new OrderItem($db);
         $this->product = new Product($db);
         $this->payment = new Payment($db);
+        $this->tracking = new OrderTracking($db);
     }
 
     public function createOrder($user_id, $cart, $payment_method, $customer = []) {
@@ -26,8 +31,15 @@ class OrderController {
         // 1. Calculate total
         foreach ($cart as $product_id => $qty) {
             $product = $this->product->getById($product_id);
+            if (!$product) {
+                continue;
+            }
             $price = $product['sale_price'] ?: $product['price'];
             $total += $price * $qty;
+        }
+
+        if ($total <= 0) {
+            throw new InvalidArgumentException('Cart is empty or contains invalid products.');
         }
 
         // 2. Create order
@@ -39,17 +51,22 @@ class OrderController {
         // 3. Create order items + update stock
         foreach ($cart as $product_id => $qty) {
             $product = $this->product->getById($product_id);
+            if (!$product) {
+                continue;
+            }
             $price = $product['sale_price'] ?: $product['price'];
 
             $this->orderItem->addItem($order_id, $product_id, $qty, $price, $product['name']);
-
-            // reduce stock
             $this->product->updateStock($product_id, $qty);
         }
 
         // 4. Create payment record
         $this->payment->create($order_id, $payment_method, $total + $deliveryFee);
         $this->createConfirmation($order_id, $customer);
+
+        $customer['created_at'] = date('Y-m-d H:i:s');
+        $this->tracking->seedInitialEvents($order_id, $customer);
+        $this->tracking->logEvent($order_id, 'confirmed', ['created_by' => 'system']);
 
         return $order_id;
     }

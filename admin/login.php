@@ -8,6 +8,9 @@ require_once __DIR__ . '/../app/includes/auth.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = 'Security token expired. Please try again.';
+    } else {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -28,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $error = 'Invalid admin login.';
     }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -43,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="section">
     <div class="container auth-page">
         <form class="auth-card" action="login.php" method="post">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
             <p class="section-kicker">Admin dashboard</p>
             <h1>Admin Login</h1>
             <?php if ($error): ?>

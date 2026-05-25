@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . '/../bootstrap.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -61,4 +64,17 @@ function require_admin($redirect = 'login.php') {
         header('Location: ' . $redirect);
         exit;
     }
+}
+
+function require_customer($loginRedirect = '../public/login.php', $adminRedirect = '../admin/profile.php') {
+    require_login($loginRedirect);
+
+    if (is_admin()) {
+        header('Location: ' . $adminRedirect);
+        exit;
+    }
+}
+
+function post_login_redirect($user) {
+    return ($user['role'] ?? '') === 'admin' ? '../admin/dashboard.php' : 'shop.php';
 }

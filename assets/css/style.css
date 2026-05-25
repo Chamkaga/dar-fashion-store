@@ -114,6 +114,12 @@ textarea {
     color: var(--secondary);
 }
 
+.button--secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--secondary);
+}
+
 .button--small {
     min-height: 38px;
     width: 100%;
@@ -771,6 +777,199 @@ textarea {
     font-weight: 700;
 }
 
+.tracking-hero {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.tracking-hero h2 {
+    margin: 0;
+    color: var(--secondary);
+}
+
+.tracking-progress-bar {
+    height: 12px;
+    border-radius: 999px;
+    background: #eef2f6;
+    overflow: hidden;
+}
+
+.tracking-progress-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), #ff8f3d);
+    transition: width 0.4s ease;
+}
+
+.delivery-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+}
+
+.delivery-timeline__item {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 18px;
+    padding-bottom: 24px;
+    position: relative;
+}
+
+.delivery-timeline__item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 25px;
+    top: 52px;
+    bottom: 0;
+    width: 3px;
+    background: var(--border);
+}
+
+.delivery-timeline__item--done:not(:last-child)::before {
+    background: var(--primary);
+}
+
+.delivery-timeline__marker {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-weight: 800;
+    z-index: 1;
+}
+
+.delivery-timeline__item--done .delivery-timeline__marker {
+    border-color: var(--primary);
+    background: #fff3e8;
+    color: var(--primary);
+}
+
+.delivery-timeline__item--current .delivery-timeline__marker {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 0 6px rgba(255, 106, 0, 0.2);
+}
+
+.delivery-timeline__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+}
+
+.delivery-timeline__item--current .delivery-timeline__card {
+    border-color: rgba(255, 106, 0, 0.45);
+}
+
+.delivery-timeline__item--upcoming .delivery-timeline__card {
+    opacity: 0.72;
+}
+
+.delivery-timeline__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.delivery-timeline__head h3 {
+    margin: 0;
+    color: var(--secondary);
+    font-size: 1.05rem;
+}
+
+.delivery-timeline__badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2f6;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.delivery-timeline__item--done .delivery-timeline__badge {
+    background: #eefaf4;
+    color: var(--success);
+}
+
+.delivery-timeline__item--current .delivery-timeline__badge {
+    background: #fff3e8;
+    color: var(--primary);
+}
+
+.delivery-timeline__summary {
+    margin: 0 0 10px;
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.delivery-timeline__activity {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: #fafbfc;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.delivery-timeline__location {
+    margin: 10px 0 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.delivery-timeline__time {
+    display: block;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.scan-history {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.scan-history__row {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fafbfc;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 720px) {
+    .delivery-timeline__item {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .delivery-timeline__marker {
+        width: 40px;
+        height: 40px;
+        font-size: 0.85rem;
+    }
+
+    .scan-history__row {
+        grid-template-columns: 1fr;
+    }
+}
+
 .profile-layout {
     display: grid;
     grid-template-columns: 300px 1fr;
@@ -951,12 +1150,8 @@ textarea {
 }
 
 .admin-sidebar nav a.is-active {
-<<<<<<< HEAD
     background: rgba(255, 255, 255, 0.18);
     font-weight: 700;
-=======
-    background: rgba(255, 255, 255, 0.16);
->>>>>>> dffcd92dcb69c10beb0fb71be3046d8012e923b0
 }
 
 .admin-content {
@@ -1441,4 +1636,199 @@ textarea {
 
 .profile-form button {
     align-self: end;
+}
+
+.customer-menu-user {
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.customer-menu-user .profile-avatar {
+    margin: 0 auto 12px;
+    width: 64px;
+    height: 64px;
+    font-size: 1.6rem;
+    background: var(--primary);
+    color: #fff;
+}
+
+.customer-menu-user strong {
+    display: block;
+    color: var(--secondary);
+}
+
+.customer-menu-user span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.customer-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.customer-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.customer-stat strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--secondary);
+    font-size: 1.35rem;
+}
+
+.customer-stat span {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.customer-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+}
+
+.customer-product-card,
+.address-card,
+.coupon-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.customer-product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.customer-product-card__body,
+.address-card,
+.coupon-card {
+    padding: 16px;
+}
+
+.customer-product-card h3,
+.address-card h3,
+.coupon-card h3 {
+    margin: 0 0 8px;
+    color: var(--secondary);
+    font-size: 0.98rem;
+}
+
+.customer-product-card p,
+.address-card p,
+.coupon-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.address-card--default {
+    border-color: rgba(255, 106, 0, 0.45);
+    background: #fff8f2;
+}
+
+.address-badge,
+.coupon-discount {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.coupon-card {
+    border-style: dashed;
+    border-color: var(--primary);
+}
+
+.coupon-discount {
+    margin-top: 0;
+    padding: 0;
+    background: none;
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.settings-panel {
+    display: grid;
+    gap: 14px;
+    max-width: 520px;
+}
+
+.settings-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.settings-box h2 {
+    margin: 0 0 12px;
+    color: var(--secondary);
+    font-size: 1.05rem;
+}
+
+.admin-user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.admin-user-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.admin-user-card.online {
+    border-color: rgba(19, 121, 91, 0.45);
+}
+
+.admin-role-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.admin-role-badge.customer {
+    background: #fff3e8;
+    color: var(--primary);
+}
+
+.admin-role-badge.admin {
+    background: #eef2f6;
+    color: var(--secondary);
+}
+
+.admin-users-summary {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    background: #fff8f2;
 }

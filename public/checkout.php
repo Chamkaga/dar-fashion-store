@@ -41,7 +41,9 @@ $deliveryFee = $subtotal > 0 ? 5000 : 0;
 $total = $subtotal + $deliveryFee;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!$conn) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = 'Security token expired. Please try again.';
+    } elseif (!$conn) {
         $error = 'Database connection failed.';
     } elseif (!$cartItems) {
         $error = 'Your cart is empty.';
@@ -57,32 +59,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($customer['customer_name'] === '' || $customer['customer_email'] === '' || $customer['customer_phone'] === '' || $customer['shipping_address'] === '') {
             $error = 'Please complete all checkout fields.';
         } else {
-            $controller = new OrderController($conn);
-            $user = current_user();
-            $orderId = $controller->createOrder($user['id'] ?? null, $_SESSION['cart'], $_POST['payment'] ?? 'mobile_money', $customer);
-            
-            // Log checkout activity
-            if (is_logged_in()) {
-                $activityLog = new ActivityLog($conn);
-                $activityLog->log($user['id'], 'checkout', [
-                    'details' => ['items_count' => count($_SESSION['cart']), 'payment_method' => $_POST['payment']]
-                ]);
-                // Log order placed activity
-                $activityLog->log($user['id'], 'order_placed', [
-                    'order_id' => $orderId,
-                    'details' => ['items_count' => count($_SESSION['cart']), 'total' => $total]
-                ]);
-                // Log payment attempted activity
-                $activityLog->log($user['id'], 'payment_attempted', [
-                    'order_id' => $orderId,
-                    'details' => ['amount' => $total, 'method' => $_POST['payment']]
-                ]);
+            try {
+                $controller = new OrderController($conn);
+                $user = current_user();
+                $orderId = $controller->createOrder($user['id'] ?? null, $_SESSION['cart'], $_POST['payment'] ?? 'mobile_money', $customer);
+
+                if (is_logged_in()) {
+                    $activityLog = new ActivityLog($conn);
+                    $activityLog->log($user['id'], 'checkout', [
+                        'details' => ['items_count' => count($_SESSION['cart']), 'payment_method' => $_POST['payment']]
+                    ]);
+                    $activityLog->log($user['id'], 'order_placed', [
+                        'order_id' => $orderId,
+                        'details' => ['items_count' => count($_SESSION['cart']), 'total' => $total]
+                    ]);
+                    $activityLog->log($user['id'], 'payment_attempted', [
+                        'order_id' => $orderId,
+                        'details' => ['amount' => $total, 'method' => $_POST['payment']]
+                    ]);
+                }
+
+                $_SESSION['cart'] = [];
+                $_SESSION['last_order_id'] = $orderId;
+                header('Location: order-success.php?order_id=' . urlencode($orderId));
+                exit;
+            } catch (Throwable $e) {
+                error_log('Checkout failed: ' . $e->getMessage());
+                $error = 'Unable to place your order. Please try again.';
             }
-            
-            $_SESSION['cart'] = [];
-            $_SESSION['last_order_id'] = $orderId;
-            header('Location: order-success.php?order_id=' . urlencode($orderId));
-            exit;
         }
     }
 }
@@ -90,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="section">
     <div class="container checkout-layout">
         <form class="checkout-form" action="checkout.php" method="post">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
             <div class="section-heading">
                 <p class="section-kicker">Checkout</p>
                 <h1>Billing and shipping</h1>

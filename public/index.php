@@ -99,7 +99,7 @@ if ($conn) {
             <div class="category-grid">
                 <?php foreach ($categories as $category): ?>
                     <a class="category-card" href="shop.php?category=<?php echo urlencode($category['slug'] ?? strtolower($category['name'])); ?>">
-                        <img src="<?php echo $category['image']; ?>" alt="<?php echo htmlspecialchars($category['name']); ?> fashion category">
+                        <img src="<?php echo htmlspecialchars($category['image'] ?? 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80'); ?>" alt="<?php echo htmlspecialchars($category['name']); ?> fashion category">
                         <span><?php echo htmlspecialchars($category['name']); ?></span>
                     </a>
                 <?php endforeach; ?>
