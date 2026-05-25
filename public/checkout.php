@@ -4,6 +4,8 @@ $basePath = '..';
 require_once __DIR__ . '/../app/config/db.php';
 require_once __DIR__ . '/../app/models/Product.php';
 require_once __DIR__ . '/../app/controllers/OrderController.php';
+require_once __DIR__ . '/../app/includes/auth.php';
+require_once __DIR__ . '/../app/models/ActivityLog.php';
 include __DIR__ . '/../app/includes/header.php';
 $database = new Database();
 $conn = $database->connect();
@@ -58,6 +60,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $controller = new OrderController($conn);
             $user = current_user();
             $orderId = $controller->createOrder($user['id'] ?? null, $_SESSION['cart'], $_POST['payment'] ?? 'mobile_money', $customer);
+            
+            // Log checkout activity
+            if (is_logged_in()) {
+                $activityLog = new ActivityLog($conn);
+                $activityLog->log($user['id'], 'checkout', [
+                    'details' => ['items_count' => count($_SESSION['cart']), 'payment_method' => $_POST['payment']]
+                ]);
+                // Log order placed activity
+                $activityLog->log($user['id'], 'order_placed', [
+                    'order_id' => $orderId,
+                    'details' => ['items_count' => count($_SESSION['cart']), 'total' => $total]
+                ]);
+                // Log payment attempted activity
+                $activityLog->log($user['id'], 'payment_attempted', [
+                    'order_id' => $orderId,
+                    'details' => ['amount' => $total, 'method' => $_POST['payment']]
+                ]);
+            }
+            
             $_SESSION['cart'] = [];
             $_SESSION['last_order_id'] = $orderId;
             header('Location: order-success.php?order_id=' . urlencode($orderId));

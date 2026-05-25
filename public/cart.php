@@ -3,6 +3,8 @@ $pageTitle = 'Shopping Cart | Dar Fashion Store';
 $basePath = '..';
 require_once __DIR__ . '/../app/config/db.php';
 require_once __DIR__ . '/../app/models/Product.php';
+require_once __DIR__ . '/../app/includes/auth.php';
+require_once __DIR__ . '/../app/models/ActivityLog.php';
 include __DIR__ . '/../app/includes/header.php';
 $database = new Database();
 $conn = $database->connect();
@@ -18,13 +20,38 @@ if (isset($_GET['add']) && $productModel) {
     $product = $productModel->getById($productId);
     if ($product) {
         $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?? 0) + $qty;
+        
+        // Log add to cart activity
+        if (is_logged_in()) {
+            $user = current_user();
+            $activityLog = new ActivityLog($conn);
+            $activityLog->log($user['id'], 'add_to_cart', [
+                'product_id' => $productId,
+                'details' => ['quantity' => $qty, 'product_name' => $product['name']]
+            ]);
+        }
     }
     header('Location: cart.php');
     exit;
 }
 
 if (isset($_GET['remove'])) {
-    unset($_SESSION['cart'][(int) $_GET['remove']]);
+    $productId = (int) $_GET['remove'];
+    if (isset($_SESSION['cart'][$productId])) {
+        // Log remove from cart activity
+        if (is_logged_in() && $productModel) {
+            $product = $productModel->getById($productId);
+            if ($product) {
+                $user = current_user();
+                $activityLog = new ActivityLog($conn);
+                $activityLog->log($user['id'], 'remove_from_cart', [
+                    'product_id' => $productId,
+                    'details' => ['product_name' => $product['name']]
+                ]);
+            }
+        }
+    }
+    unset($_SESSION['cart'][$productId]);
     header('Location: cart.php');
     exit;
 }

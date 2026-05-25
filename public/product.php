@@ -3,6 +3,8 @@ $pageTitle = 'Product Details | Dar Fashion Store';
 $basePath = '..';
 require_once __DIR__ . '/../app/config/db.php';
 require_once __DIR__ . '/../app/models/Product.php';
+require_once __DIR__ . '/../app/includes/auth.php';
+require_once __DIR__ . '/../app/models/ActivityLog.php';
 include __DIR__ . '/../app/includes/header.php';
 $database = new Database();
 $conn = $database->connect();
@@ -19,6 +21,16 @@ if ($productModel) {
 
 if (!$product) {
     http_response_code(404);
+} else {
+    // Log product view activity
+    if (is_logged_in()) {
+        $user = current_user();
+        $activityLog = new ActivityLog($conn);
+        $activityLog->log($user['id'], 'view_product', [
+            'product_id' => $product['id'],
+            'details' => ['product_name' => $product['name']]
+        ]);
+    }
 }
 
 $images = $product && $productModel ? $productModel->getImages($product['id']) : [];

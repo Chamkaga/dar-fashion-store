@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../app/includes/auth.php';
 require_admin('login.php');
 require_once __DIR__ . '/../app/config/db.php';
+require_once __DIR__ . '/../app/models/ActivityLog.php';
 
 $conn = (new Database())->connect();
 
@@ -107,6 +108,15 @@ if (!$salesTrend && $recentOrders) {
     $salesTrend = array_map(fn($label, $value) => ['label' => $label, 'value' => $value], array_keys($daily), $daily);
 }
 
+// Get user activities
+$activityLog = $conn ? new ActivityLog($conn) : null;
+$recentActivities = [];
+$onlineUsers = [];
+if ($activityLog) {
+    $recentActivities = $activityLog->getRecentActivities(10);
+    $onlineUsers = $activityLog->getOnlineUsers();
+}
+
 $chartData = [
     'salesByMonth' => $salesByMonth,
     'paymentMethods' => $paymentMethods,
@@ -130,12 +140,12 @@ $chartData = [
         <a class="logo" href="dashboard.php"><span class="logo__mark">DF</span><span class="logo__text">Admin</span></a>
         <nav>
             <a class="is-active" href="dashboard.php">Dashboard</a>
+            <a href="activities/index.php">User Activities</a>
+            <a href="users/index.php">Users / Customers</a>
             <a href="products/index.php">Products Management</a>
             <a href="categories/index.php">Categories Management</a>
             <a href="orders/index.php">Orders Management</a>
-            <a href="users/index.php">Users / Customers</a>
             <a href="payments/index.php">Payments</a>
-            <a href="orders/index.php">Order Tracking</a>
             <a href="reports/index.php">Reports & Analytics</a>
             <a href="inventory/index.php">Inventory / Stock</a>
             <a href="messages/index.php">Messages</a>
@@ -196,6 +206,62 @@ $chartData = [
                 <?php else: ?>
                     <p class="empty-state">No low stock alerts right now.</p>
                 <?php endif; ?>
+            </article>
+        </section>
+
+        <section class="admin-grid-two">
+            <article class="admin-panel">
+                <h2>Online Users Right Now</h2>
+                <?php if ($onlineUsers): ?>
+                    <div class="admin-alert-list">
+                        <?php foreach ($onlineUsers as $user): ?>
+                            <p>
+                                <span>
+                                    <strong><?php echo htmlspecialchars($user['fullname']); ?></strong> 
+                                    <em style="color: #999; font-size: 0.85rem;">(<?php echo htmlspecialchars($user['role']); ?>)</em>
+                                </span>
+                                <small style="color: #0099ff; font-size: 0.75rem;"><?php echo date('H:i', strtotime($user['last_activity'])); ?></small>
+                            </p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="empty-state">No active users right now.</p>
+                <?php endif; ?>
+                <p style="margin-top: 1rem;"><a href="users/index.php">View all users →</a></p>
+            </article>
+            <article class="admin-panel">
+                <h2>Recent User Activities</h2>
+                <?php if ($recentActivities): ?>
+                    <div class="admin-alert-list">
+                        <?php 
+                        $activityLabels = [
+                            'login' => '🔓 Login',
+                            'logout' => '🔒 Logout',
+                            'view_product' => '👁️ Viewed',
+                            'add_to_cart' => '🛒 Added to Cart',
+                            'remove_from_cart' => '✕ Removed from Cart',
+                            'checkout' => '💳 Checkout',
+                            'order_placed' => '✓ Order Placed',
+                            'payment_attempted' => '💰 Payment',
+                        ];
+                        foreach ($recentActivities as $activity): 
+                        ?>
+                            <p style="font-size: 0.9rem;">
+                                <span>
+                                    <strong><?php echo htmlspecialchars($activity['fullname']); ?></strong>
+                                    <?php echo $activityLabels[$activity['activity_type']] ?? ucfirst(str_replace('_', ' ', $activity['activity_type'])); ?>
+                                    <?php if ($activity['product_name']): ?>
+                                        <em><?php echo htmlspecialchars($activity['product_name']); ?></em>
+                                    <?php endif; ?>
+                                </span>
+                                <small style="color: #999; font-size: 0.75rem;"><?php echo date('M d, H:i', strtotime($activity['created_at'])); ?></small>
+                            </p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="empty-state">No recent activities.</p>
+                <?php endif; ?>
+                <p style="margin-top: 1rem;"><a href="activities/index.php">View all activities →</a></p>
             </article>
         </section>
     </section>

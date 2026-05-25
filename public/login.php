@@ -4,6 +4,7 @@ $basePath = '..';
 require_once __DIR__ . '/../app/config/db.php';
 require_once __DIR__ . '/../app/controllers/UserController.php';
 require_once __DIR__ . '/../app/includes/auth.php';
+require_once __DIR__ . '/../app/models/ActivityLog.php';
 
 $error = '';
 
@@ -25,6 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($user) {
                 login_user($user);
+                
+                // Log login activity
+                $activityLog = new ActivityLog($conn);
+                $activityLog->log($user['id'], 'login', [
+                    'details' => ['ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown']
+                ]);
+                
                 header('Location: shop.php');
                 exit;
             }
