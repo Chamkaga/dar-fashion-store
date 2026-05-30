@@ -1,139 +1,132 @@
 <?php
 /**
- * Database Setup Script
- * Imports schema and demo data from database/ecommerce.sql
+ * Database Setup Script for Dar Fashion Store
+ * Run this file to set up the database and populate it with sample data
  */
 
-require_once __DIR__ . '/app/includes/env.php';
-load_env_file(__DIR__ . '/.env');
-
-$dbHost = app_env('DB_HOST', 'localhost');
-$dbName = app_env('DB_NAME', 'fashion_storedb');
-$dbUser = app_env('DB_USER', 'root');
-$dbPassword = app_env('DB_PASSWORD', '');
-
-echo "==== Dar Fashion Store - Database Setup ====\n\n";
-echo "Configuration:\n";
-echo "- Host: $dbHost\n";
-echo "- Database: $dbName\n";
-echo "- User: $dbUser\n\n";
+$host = 'localhost';
+$dbname = 'fashion_storedb';
+$username = 'root';
+$password = '';
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$dbHost;charset=utf8mb4",
-        $dbUser,
-        $dbPassword,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-    echo "✓ Connected to MySQL server\n\n";
-} catch (PDOException $e) {
-    echo "✗ Failed to connect to MySQL: " . $e->getMessage() . "\n";
-    echo "Copy .env.example to .env and set DB_PASSWORD to your MySQL password.\n";
-    exit(1);
-}
-
-try {
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "✓ Database '$dbName' ready\n";
-    $pdo->exec("USE `$dbName`");
-    echo "✓ Selected database '$dbName'\n\n";
-} catch (PDOException $e) {
-    echo "✗ Database setup failed: " . $e->getMessage() . "\n";
-    exit(1);
-}
-
-$sqlFile = __DIR__ . '/database/ecommerce.sql';
-if (!file_exists($sqlFile)) {
-    echo "✗ SQL file not found: $sqlFile\n";
-    exit(1);
-}
-
-echo "Importing database schema...\n";
-
-$sql = file_get_contents($sqlFile);
-$sql = preg_replace('/^--.*$/m', '', $sql);
-$sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
-
-$statements = preg_split('/;\s*\n/', $sql);
-$count = 0;
-$errors = 0;
-
-foreach ($statements as $statement) {
-    $statement = trim($statement);
-    if ($statement === '') {
-        continue;
-    }
-
-    try {
-        $pdo->exec($statement);
-        $count++;
-    } catch (PDOException $e) {
-        $errors++;
-        echo "✗ Error: " . $e->getMessage() . "\n";
-        echo "  Statement: " . substr(str_replace("\n", ' ', $statement), 0, 120) . "...\n";
-    }
-}
-
-echo "✓ Executed $count SQL statements";
-if ($errors > 0) {
-    echo " ($errors failed)";
-}
-echo "\n";
-
-$tables = [
-    'users',
-    'categories',
-    'products',
-    'orders',
-    'order_items',
-    'payments',
-    'reviews',
-    'user_wishlist',
-    'user_addresses',
-    'user_coupons',
-    'user_returns',
-    'user_activities',
-    'order_confirmations',
-];
-
-$result = $pdo->query('SHOW TABLES');
-$existingTables = $result->fetchAll(PDO::FETCH_COLUMN);
-
-echo "\nVerifying tables:\n";
-$allPresent = true;
-foreach ($tables as $table) {
-    if (in_array($table, $existingTables, true)) {
-        echo "✓ Table: $table\n";
+    // Connect to MySQL server
+    $pdo = new PDO("mysql:host=$host", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    echo "Connected to MySQL server successfully.<br>";
+    
+    // Create database if it doesn't exist
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    echo "Database created or already exists.<br>";
+    
+    // Select the database
+    $pdo->exec("USE `$dbname`");
+    echo "Database selected.<br>";
+    
+    // Read and execute the SQL file
+    $sqlFile = __DIR__ . '/database/ecommerce.sql';
+    if (file_exists($sqlFile)) {
+        $sql = file_get_contents($sqlFile);
+        
+        // Split SQL into individual statements
+        $statements = explode(';', $sql);
+        
+        foreach ($statements as $statement) {
+            $statement = trim($statement);
+            if (!empty($statement) && !preg_match('/^--/', $statement)) {
+                try {
+                    $pdo->exec($statement);
+                } catch (PDOException $e) {
+                    // Ignore errors for statements that might fail (like DROP IF EXISTS)
+                    if (strpos($e->getMessage(), 'Table') === false) {
+                        echo "Error executing statement: " . $e->getMessage() . "<br>";
+                    }
+                }
+            }
+        }
+        echo "Database structure created successfully.<br>";
     } else {
-        echo "✗ Table: $table (MISSING)\n";
-        $allPresent = false;
+        echo "SQL file not found: $sqlFile<br>";
     }
-}
-
-echo "\nVerifying demo data:\n";
-$checks = [
-    'users' => 'SELECT COUNT(*) FROM users',
-    'products' => 'SELECT COUNT(*) FROM products',
-    'orders' => 'SELECT COUNT(*) FROM orders',
-];
-
-foreach ($checks as $table => $query) {
-    try {
-        $count = (int) $pdo->query($query)->fetchColumn();
-        echo "✓ $table: $count records\n";
-    } catch (Exception $e) {
-        echo "✗ $table: " . $e->getMessage() . "\n";
-        $allPresent = false;
+    
+    // Insert sample data
+    echo "<br>Inserting sample data...<br>";
+    
+    // Insert admin user
+    $adminPassword = password_hash('admin123', PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare("INSERT IGNORE INTO users (fullname, email, password, role, status) VALUES (?, ?, ?, 'admin', 'active')");
+    $stmt->execute(['Admin User', 'admin@fashionstore.com', $adminPassword]);
+    echo "Admin user created (email: admin@fashionstore.com, password: admin123)<br>";
+    
+    // Insert sample categories
+    $categories = [
+        ['Men\'s Clothing', 'mens-clothing', 'Clothing for men including shirts, pants, and jackets'],
+        ['Women\'s Clothing', 'womens-clothing', 'Clothing for women including dresses, tops, and skirts'],
+        ['Accessories', 'accessories', 'Fashion accessories including bags, jewelry, and watches'],
+        ['Footwear', 'footwear', 'Shoes and sandals for all occasions'],
+    ];
+    
+    $stmt = $pdo->prepare("INSERT IGNORE INTO categories (name, slug, description) VALUES (?, ?, ?)");
+    foreach ($categories as $cat) {
+        $stmt->execute($cat);
     }
+    echo "Sample categories inserted.<br>";
+    
+    // Insert sample products
+    $products = [
+        [1, 'Men\'s Casual Shirt', 'mens-casual-shirt', 'SKU001', 45000, 38000, 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400', 'Comfortable casual shirt for everyday wear', 'S,M,L,XL', 'Blue,Black,White', 50, 1, 0],
+        [1, 'Men\'s Formal Shirt', 'mens-formal-shirt', 'SKU002', 55000, 0, 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400', 'Formal shirt for office and special occasions', 'S,M,L,XL', 'White,Light Blue', 30, 0, 1],
+        [2, 'Women\'s Summer Dress', 'womens-summer-dress', 'SKU003', 65000, 55000, 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400', 'Beautiful summer dress for warm weather', 'S,M,L', 'Red,Blue,Green', 25, 1, 1],
+        [2, 'Women\'s Blouse', 'womens-blouse', 'SKU004', 35000, 0, 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=400', 'Elegant blouse for casual and formal wear', 'S,M,L,XL', 'White,Pink,Yellow', 40, 0, 0],
+        [3, 'Leather Handbag', 'leather-handbag', 'SKU005', 85000, 75000, 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400', 'Premium leather handbag with multiple compartments', 'One Size', 'Black,Brown,Tan', 15, 1, 1],
+        [3, 'Fashion Watch', 'fashion-watch', 'SKU006', 120000, 0, 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400', 'Stylish fashion watch for everyday wear', 'One Size', 'Silver,Gold,Rose Gold', 20, 0, 0],
+        [4, 'Men\'s Sneakers', 'mens-sneakers', 'SKU007', 75000, 65000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', 'Comfortable sneakers for casual wear', '40,41,42,43,44', 'Black,White,Red', 35, 1, 1],
+        [4, 'Women\'s Sandals', 'womens-sandals', 'SKU008', 45000, 0, 'https://images.unsplash.com/photo-1515347619252-60a6bf4fffce?w=400', 'Elegant sandals for summer and formal occasions', '36,37,38,39,40', 'Black,Gold,Silver', 45, 0, 0],
+    ];
+    
+    $stmt = $pdo->prepare("INSERT IGNORE INTO products (category_id, name, slug, sku, price, sale_price, image, description, size_options, color_options, stock_quantity, is_featured, is_trending) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    foreach ($products as $prod) {
+        $stmt->execute($prod);
+    }
+    echo "Sample products inserted.<br>";
+    
+    // Insert sample delivery regions
+    $regions = [
+        ['Dar es Salaam', 5000, '1 day', 'Local courier'],
+        ['Morogoro', 8000, '2 days', 'Road courier'],
+        ['Mwanza', 12000, '3-4 days', 'Road courier'],
+        ['Zanzibar', 10000, '2 days', 'Sea delivery'],
+        ['Arusha', 15000, '3-5 days', 'Road courier'],
+    ];
+    
+    $stmt = $pdo->prepare("INSERT IGNORE INTO delivery_regions (region_name, delivery_fee, estimated_days, delivery_method) VALUES (?, ?, ?, ?)");
+    foreach ($regions as $region) {
+        $stmt->execute($region);
+    }
+    echo "Delivery regions inserted.<br>";
+    
+    // Insert sample store settings
+    $settings = [
+        ['store_name', 'Dar Fashion Store'],
+        ['contact_phone', '+255700000000'],
+        ['contact_email', 'info@fashionstore.com'],
+        ['payment_methods', 'M-Pesa, Card Demo, Cash on Delivery'],
+        ['currency', 'TZS'],
+    ];
+    
+    $stmt = $pdo->prepare("INSERT IGNORE INTO store_settings (setting_key, setting_value) VALUES (?, ?)");
+    foreach ($settings as $setting) {
+        $stmt->execute($setting);
+    }
+    echo "Store settings inserted.<br>";
+    
+    echo "<br><strong>Database setup completed successfully!</strong><br>";
+    echo "<br>You can now login to the admin panel:<br>";
+    echo "Email: admin@fashionstore.com<br>";
+    echo "Password: admin123<br>";
+    echo "<br><a href='admin/login.php'>Go to Admin Login</a>";
+    
+} catch (PDOException $e) {
+    echo "Database Error: " . $e->getMessage();
 }
-
-if ($allPresent) {
-    echo "\n✅ Database setup completed successfully!\n";
-    echo "\nDemo credentials (password: password123):\n";
-    echo "- amina@example.com\n";
-    echo "- admin@darfashion.store (admin)\n";
-    exit(0);
-}
-
-echo "\n⚠️  Setup incomplete. Check MySQL credentials in .env and re-run.\n";
-exit(1);

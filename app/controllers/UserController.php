@@ -34,5 +34,17 @@ class UserController {
     public function getUsers() {
         return $this->user->getAll();
     }
+
+    public function updateProfile($id, $fullname, $email, $phone = null, $shipping = null, $billing = null) {
+        return $this->user->updateProfileFull($id, $fullname, $email, $phone, $shipping, $billing);
+    }
+
+    public function changePassword($id, $newPassword) {
+        return $this->user->updatePassword($id, $newPassword);
+    }
+
+    public function uploadProfilePicture($id, $path) {
+        return $this->user->updateProfilePicture($id, $path);
+    }
 }
 ?>

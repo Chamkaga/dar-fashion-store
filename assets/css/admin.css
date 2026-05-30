@@ -2,15 +2,16 @@
 
 .admin-sidebar__hint {
     margin: -12px 0 20px;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--muted);
     font-size: 0.78rem;
     line-height: 1.4;
 }
 
 .admin-nav-logout {
     margin-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid var(--border);
     padding-top: 14px !important;
+    color: var(--secondary);
 }
 
 .admin-page-header {
@@ -336,4 +337,170 @@
     .admin-detail-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Admin Grid Two Column */
+.admin-grid-two {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .admin-grid-two {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Admin Form Grid */
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.admin-form-grid__wide {
+    grid-column: 1 / -1;
+}
+
+.admin-form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-form-grid label strong {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.admin-form-grid input:focus,
+.admin-form-grid select:focus,
+.admin-form-grid textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Product Preview Card */
+.product-preview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.product-preview-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-preview-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-preview-info {
+    padding: 20px;
+}
+
+.product-preview-info h3 {
+    margin: 0 0 8px 0;
+    color: var(--secondary);
+    font-size: 1.1rem;
+}
+
+.preview-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 12px 0;
+}
+
+.preview-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 12px 0;
+}
+
+.preview-rating .star {
+    font-size: 18px;
+}
+
+.preview-rating .rating-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-left: 4px;
+}
+
+.preview-price {
+    margin: 12px 0;
+}
+
+.preview-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.preview-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Admin Tips List */
+.admin-tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-tips-list li {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--primary);
+    background: #fff8f2;
+    color: var(--secondary);
+    font-size: 0.9rem;
+}
+
+.admin-tips-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* Required Fields List */
+.required-fields-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.required-field {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #f0f8ff;
+    color: var(--secondary);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
 }

@@ -4,6 +4,7 @@ $adminRoot = $adminRoot ?? '';
 
 $navItems = [
     'dashboard' => ['label' => 'Dashboard', 'href' => $adminRoot . 'dashboard.php'],
+    'analytics' => ['label' => 'Analytics', 'href' => $adminRoot . 'analytics/index.php'],
     'users' => ['label' => 'Users & Accounts', 'href' => $adminRoot . 'users/index.php'],
     'orders' => ['label' => 'Orders', 'href' => $adminRoot . 'orders/index.php'],
     'products' => ['label' => 'Products', 'href' => $adminRoot . 'products/index.php'],
@@ -14,7 +15,6 @@ $navItems = [
     'reports' => ['label' => 'Reports', 'href' => $adminRoot . 'reports/index.php'],
     'messages' => ['label' => 'Messages', 'href' => $adminRoot . 'messages/index.php'],
     'settings' => ['label' => 'Store Settings', 'href' => $adminRoot . 'settings/index.php'],
-    'profile' => ['label' => 'My Admin Account', 'href' => $adminRoot . 'profile.php'],
 ];
 ?>
 <aside class="admin-sidebar">
@@ -29,6 +29,6 @@ $navItems = [
                 <?php echo htmlspecialchars($item['label']); ?>
             </a>
         <?php endforeach; ?>
-        <a href="<?php echo $adminRoot; ?>logout.php" class="admin-nav-logout">Logout</a>
+        <a href="<?php echo $adminRoot; ?>logout.php" class="admin-nav-logout" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">Logout</a>
     </nav>
 </aside>

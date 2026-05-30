@@ -35,7 +35,7 @@ class Product {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function search($search = '', $category = '', $sort = 'featured') {
+    public function search($search = '', $category = '', $sort = 'featured', $priceRange = '', $minRating = 0) {
         $sql = "
             SELECT products.*, categories.name AS category_name, categories.slug AS category_slug,
                    COALESCE(AVG(reviews.rating), 0) AS avg_rating
@@ -66,7 +66,20 @@ class Product {
             $params[] = $category;
         }
 
+        if ($priceRange === 'under-30000') {
+            $sql .= " AND products.price < 30000";
+        } elseif ($priceRange === '30000-70000') {
+            $sql .= " AND products.price >= 30000 AND products.price <= 70000";
+        } elseif ($priceRange === 'above-70000') {
+            $sql .= " AND products.price > 70000";
+        }
+
         $sql .= " GROUP BY products.id";
+
+        if ($minRating > 0) {
+            $sql .= " HAVING avg_rating >= ?";
+            $params[] = (float) $minRating;
+        }
 
         if ($sort === 'price-low') {
             $sql .= " ORDER BY products.price ASC";
@@ -129,5 +142,37 @@ class Product {
         ");
         return $stmt->execute([$qty, $product_id]);
     }
+    
+    // Variant helpers - product-level model convenience methods
+    public function getVariants($product_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM product_variants WHERE product_id = ? ORDER BY id ASC");
+        $stmt->execute([$product_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getVariantById($variant_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM product_variants WHERE id = ? LIMIT 1");
+        $stmt->execute([$variant_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function updateVariantStock($variant_id, $qty) {
+        $stmt = $this->conn->prepare("UPDATE product_variants SET stock_quantity = stock_quantity - ? WHERE id = ? AND stock_quantity >= ?");
+        return $stmt->execute([$qty, $variant_id, $qty]);
+    }
+
+    public function getVariantImages($product_id) {
+        $stmt = $this->conn->prepare("SELECT variant_id, image_url FROM product_variant_images WHERE product_id = ? ORDER BY id ASC");
+        $stmt->execute([$product_id]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $map = [];
+        foreach ($rows as $r) {
+            $vid = $r['variant_id'] ?: 0;
+            if (!isset($map[$vid])) $map[$vid] = [];
+            $map[$vid][] = $r['image_url'];
+        }
+        return $map;
+    }
 }
+
 ?>

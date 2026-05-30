@@ -1,0 +1,1 @@
+This file contains the JS snippet inserted into product.php to handle dynamic variant availability and image switching. It's stored here for reference.

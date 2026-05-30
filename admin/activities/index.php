@@ -34,6 +34,9 @@ foreach ($activities as $activity) {
     $groupedActivities[$date][] = $activity;
 }
 
+$adminPage = 'activities';
+$adminRoot = '../';
+
 function getActivityBadgeColor($activityType) {
     $colors = [
         'login' => '#0066ff',
@@ -70,8 +73,9 @@ function getActivityLabel($activityType) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Activities - Admin Dashboard</title>
+    <title>User Activities | Dar Fashion Store Admin</title>
     <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/admin.css">
     <link rel="stylesheet" href="../../assets/css/responsive.css">
     <style>
         .activity-timeline {
@@ -169,13 +173,19 @@ function getActivityLabel($activityType) {
     </style>
 </head>
 <body>
-<main class="section">
-    <div class="container">
-        <div class="section-heading">
-            <p class="section-kicker">Admin</p>
-            <h1>User Activities</h1>
-            <p>Real-time tracking of all customer actions and order progress</p>
-        </div>
+<main class="admin-shell">
+    <?php include __DIR__ . '/../../app/includes/admin-sidebar.php'; ?>
+    <section class="admin-content">
+        <header class="admin-page-header">
+            <div>
+                <p class="section-kicker">System Monitoring</p>
+                <h1>User Activities</h1>
+                <p>Real-time tracking of all customer actions and order progress</p>
+            </div>
+            <div class="admin-page-actions">
+                <a class="button button--primary" href="../dashboard.php">Dashboard</a>
+            </div>
+        </header>
 
         <div class="activity-filters">
             <a href="index.php?filter=all" class="activity-filter-btn <?php echo $filter === 'all' ? 'active' : ''; ?>">All Activities</a>
@@ -224,9 +234,7 @@ function getActivityLabel($activityType) {
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-
-        <p style="margin-top: 2rem;"><a href="../index.php">Back to dashboard</a></p>
-    </div>
+    </section>
 </main>
 </body>
 </html>

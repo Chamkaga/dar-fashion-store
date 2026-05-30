@@ -16,6 +16,10 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+if (!isset($_SESSION['checkout_idempotency_key'])) {
+    $_SESSION['checkout_idempotency_key'] = bin2hex(random_bytes(16));
+}
+
 if (isset($_GET['buy']) && $productModel) {
     $productId = (int) $_GET['buy'];
     if ($productModel->getById($productId)) {
@@ -27,12 +31,21 @@ $cartItems = [];
 $subtotal = 0;
 
 if ($productModel) {
-    foreach ($_SESSION['cart'] as $productId => $qty) {
-        $product = $productModel->getById((int) $productId);
-        if ($product) {
-            $price = (float) ($product['sale_price'] ?: $product['price']);
-            $subtotal += $price * (int) $qty;
-            $cartItems[] = ['product' => $product, 'qty' => (int) $qty, 'price' => $price];
+    foreach ($_SESSION['cart'] as $key => $item) {
+        if (is_array($item) && isset($item['variant_id'])) {
+            $product = $productModel->getById((int) $item['product_id']);
+            $price = (float) ($item['unit_price'] ?: $product['sale_price'] ?: $product['price']);
+            $subtotal += $price * (int) $item['qty'];
+            $cartItems[] = ['product' => $product, 'qty' => (int) $item['qty'], 'price' => $price, 'variant' => $item];
+        } else {
+            $productId = (int) $key;
+            $product = $productModel->getById($productId);
+            if ($product) {
+                $qty = (int) $item;
+                $price = (float) ($product['sale_price'] ?: $product['price']);
+                $subtotal += $price * $qty;
+                $cartItems[] = ['product' => $product, 'qty' => $qty, 'price' => $price];
+            }
         }
     }
 }
@@ -62,7 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $controller = new OrderController($conn);
                 $user = current_user();
-                $orderId = $controller->createOrder($user['id'] ?? null, $_SESSION['cart'], $_POST['payment'] ?? 'mobile_money', $customer);
+                $customer['user_id'] = $user['id'] ?? null;
+                $orderId = $controller->createOrder(
+                    $user['id'] ?? null,
+                    $_SESSION['cart'],
+                    $_POST['payment'] ?? 'mobile_money',
+                    $customer,
+                    $_SESSION['checkout_idempotency_key']
+                );
 
                 if (is_logged_in()) {
                     $activityLog = new ActivityLog($conn);
@@ -81,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $_SESSION['cart'] = [];
                 $_SESSION['last_order_id'] = $orderId;
+                unset($_SESSION['checkout_idempotency_key']);
                 header('Location: order-success.php?order_id=' . urlencode($orderId));
                 exit;
             } catch (Throwable $e) {
@@ -95,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container checkout-layout">
         <form class="checkout-form" action="checkout.php" method="post">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+            <input type="hidden" name="checkout_idempotency_key" value="<?php echo htmlspecialchars($_SESSION['checkout_idempotency_key']); ?>">
             <div class="section-heading">
                 <p class="section-kicker">Checkout</p>
                 <h1>Billing and shipping</h1>

@@ -10,8 +10,8 @@ class CartController {
         $this->cart = new Cart();
     }
 
-    public function addToCart($product_id, $qty) {
-        $this->cart->add($product_id, $qty);
+    public function addToCart($product_id, $variant_id, $qty, $unit_price = null, $color = null, $size = null) {
+        $this->cart->add($product_id, $variant_id, $qty, $unit_price, $color, $size);
     }
 
     public function removeFromCart($product_id) {

@@ -6,6 +6,20 @@ require_once __DIR__ . '/../../app/models/ActivityLog.php';
 
 $conn = (new Database())->connect();
 $activityLog = $conn ? new ActivityLog($conn) : null;
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $conn) {
+    $action = $_POST['action'] ?? '';
+    if ($action === 'toggle_status') {
+        $id = (int) ($_POST['user_id'] ?? 0);
+        $newStatus = $_POST['status'] ?? 'active';
+        if (in_array($newStatus, ['active', 'blocked'])) {
+            $stmt = $conn->prepare("UPDATE users SET status = ? WHERE id = ? AND role = 'customer'");
+            $stmt->execute([$newStatus, $id]);
+            $message = 'User status updated successfully.';
+        }
+    }
+}
 
 $roleFilter = $_GET['role'] ?? 'all';
 if (!in_array($roleFilter, ['all', 'customer', 'admin'], true)) {
@@ -130,6 +144,8 @@ $adminRoot = '../';
             </div>
         </header>
 
+        <?php if ($message): ?><p class="alert alert--success"><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
+
         <div class="admin-users-summary">
             <p>
                 <strong><?php echo count($users); ?></strong> accounts shown
@@ -232,7 +248,23 @@ $adminRoot = '../';
                         <div class="admin-detail-fields">
                             <p><strong>Email</strong><?php echo htmlspecialchars($selectedUser['email']); ?></p>
                             <p><strong>Phone</strong><?php echo htmlspecialchars($selectedUser['phone'] ?: 'Not provided'); ?></p>
-                            <p><strong>Status</strong><?php echo htmlspecialchars(ucfirst($selectedUser['status'])); ?></p>
+                            <p><strong>Status</strong>
+                                <?php if ($selectedUser['role'] === 'customer'): ?>
+                                    <span class="admin-role-badge <?php echo htmlspecialchars($selectedUser['status']); ?>">
+                                        <?php echo htmlspecialchars(ucfirst($selectedUser['status'])); ?>
+                                    </span>
+                                    <form method="post" style="display:inline; margin-left:8px;">
+                                        <input type="hidden" name="action" value="toggle_status">
+                                        <input type="hidden" name="user_id" value="<?php echo (int) $selectedUser['id']; ?>">
+                                        <input type="hidden" name="status" value="<?php echo $selectedUser['status'] === 'active' ? 'blocked' : 'active'; ?>">
+                                        <button class="button button--small button--secondary" type="submit">
+                                            <?php echo $selectedUser['status'] === 'active' ? 'Block' : 'Activate'; ?>
+                                        </button>
+                                    </form>
+                                <?php else: ?>
+                                    <?php echo htmlspecialchars(ucfirst($selectedUser['status'])); ?>
+                                <?php endif; ?>
+                            </p>
                             <p><strong>Member since</strong><?php echo date('M d, Y', strtotime($selectedUser['created_at'])); ?></p>
                         </div>
 

@@ -15,10 +15,12 @@ class Order {
         $shippingAddress = $customer['shipping_address'] ?? 'Dar es Salaam';
         $deliveryFee = $customer['delivery_fee'] ?? 0;
         $subtotal = $customer['subtotal'] ?? $total;
+        $idempotencyKey = $customer['idempotency_key'] ?? null;
 
         $stmt = $this->conn->prepare("
             INSERT INTO orders (
                 order_number,
+                idempotency_key,
                 user_id,
                 customer_name,
                 customer_email,
@@ -29,10 +31,11 @@ class Order {
                 total,
                 status
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
         $stmt->execute([
             $orderNumber,
+            $idempotencyKey,
             $user_id,
             $customerName,
             $customerEmail,

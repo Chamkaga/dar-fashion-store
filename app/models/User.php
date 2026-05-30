@@ -48,6 +48,37 @@ class User {
         ]);
     }
 
+    public function updateProfileFull($id, $fullname, $email, $phone = null, $shipping_address = null, $billing_address = null) {
+        $sql = "UPDATE users SET fullname = :fullname, email = :email, phone = :phone, shipping_address = :shipping, billing_address = :billing WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ":fullname" => $fullname,
+            ":email" => $email,
+            ":phone" => $phone,
+            ":shipping" => $shipping_address,
+            ":billing" => $billing_address,
+            ":id" => $id
+        ]);
+    }
+
+    public function updatePassword($id, $newPassword) {
+        $sql = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ":password" => password_hash($newPassword, PASSWORD_DEFAULT),
+            ":id" => $id
+        ]);
+    }
+
+    public function updateProfilePicture($id, $path) {
+        $sql = "UPDATE users SET profile_picture = :path WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ":path" => $path,
+            ":id" => $id
+        ]);
+    }
+
     public function login($email) {
         return $this->findByEmail($email);
     }

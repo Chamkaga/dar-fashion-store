@@ -23,8 +23,10 @@ body {
     margin: 0;
     background: var(--background);
     color: var(--text);
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 img {
@@ -270,8 +272,9 @@ textarea {
 .text-page {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
 }
 
 .hero-panel {
@@ -463,7 +466,7 @@ textarea {
 }
 
 .product-card__body {
-    padding: 16px;
+    padding: 18px;
 }
 
 .product-card__title-row {
@@ -474,9 +477,11 @@ textarea {
 }
 
 .product-card h3 {
-    margin: 0;
+    margin: 0 0 8px;
     color: var(--secondary);
     font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .icon-button {
@@ -527,8 +532,7 @@ textarea {
     padding: 20px;
 }
 
-.benefit-card strong,
-.testimonial-card strong {
+.benefit-card strong {
     display: block;
     color: var(--secondary);
 }
@@ -662,6 +666,280 @@ textarea {
     margin: 18px 0;
     color: var(--primary);
     font-size: 1.8rem;
+}
+
+/* Product Rating Card */
+.product-rating-card {
+    background: linear-gradient(135deg, #fff5e6 0%, #fff 100%);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(255, 106, 0, 0.15);
+}
+
+.rating-stars {
+    display: flex;
+    gap: 4px;
+}
+
+.star {
+    font-size: 24px;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.star-filled {
+    color: #FFD700;
+}
+
+.star-empty {
+    color: #ddd;
+}
+
+.rating-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.rating-info strong {
+    font-size: 28px;
+    color: var(--secondary);
+    line-height: 1;
+}
+
+.rating-info span {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Product Price Card */
+.product-price-card {
+    background: linear-gradient(135deg, #f0f8ff 0%, #fff 100%);
+    border: 2px solid var(--secondary);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(35, 47, 62, 0.15);
+}
+
+.original-price {
+    display: block;
+    font-size: 16px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+}
+
+.sale-price {
+    display: block;
+    font-size: 32px;
+    color: var(--primary);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.regular-price {
+    display: block;
+    font-size: 32px;
+    color: var(--secondary);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.discount-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.product-meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 12px 0;
+}
+
+.product-description {
+    line-height: 1.6;
+    color: var(--text);
+    margin: 16px 0;
+}
+
+/* Reviews Section */
+.reviews-section {
+    margin: 40px 0;
+}
+
+.review-form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.review-form-card h3 {
+    margin: 0 0 16px 0;
+    color: var(--secondary);
+}
+
+.rating-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.star-label {
+    font-size: 32px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-label:hover {
+    color: #FFD700;
+}
+
+.rating-input input[type="radio"]:checked + .star-label {
+    color: #FFD700;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 20px;
+    background: var(--background);
+    border-radius: 8px;
+    margin-bottom: 32px;
+}
+
+.login-prompt a {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.reviews-list {
+    display: grid;
+    gap: 16px;
+}
+
+.review-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.review-header strong {
+    color: var(--secondary);
+    font-size: 16px;
+}
+
+.review-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.review-stars .star {
+    font-size: 16px;
+}
+
+.review-comment {
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0 0 8px 0;
+}
+
+.review-date {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Product Card Rating */
+.product-card-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 8px 0;
+}
+
+.product-card-rating .star {
+    font-size: 16px;
+}
+
+.product-card-rating .rating-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-left: 4px;
+}
+
+/* Product Card Price */
+.product-card-price {
+    margin: 8px 0;
+}
+
+.product-card-price .original-price {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-bottom: 2px;
+}
+
+.product-card-price .sale-price {
+    display: block;
+    font-size: 18px;
+    color: var(--primary);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.product-card-price .regular-price {
+    display: block;
+    font-size: 18px;
+    color: var(--secondary);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.discount-badge-mini {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
 }
 
 .purchase-box {
@@ -1120,42 +1398,83 @@ textarea {
 .admin-shell {
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 280px 1fr;
+    background: var(--background);
 }
 
 .admin-sidebar {
-    background: var(--secondary);
-    color: #fff;
-    padding: 24px;
+    background: #ffffff;
+    color: var(--secondary);
+    padding: 24px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    border-right: 1px solid var(--border);
 }
 
 .admin-sidebar .logo {
-    color: #fff;
+    color: var(--secondary);
     margin-bottom: 28px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-sidebar .logo__mark {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: var(--primary);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #fff;
+}
+
+.admin-sidebar .logo__text {
+    font-size: 1.1rem;
 }
 
 .admin-sidebar nav {
     display: grid;
-    gap: 8px;
+    gap: 6px;
 }
 
 .admin-sidebar nav a {
-    border-radius: 6px;
-    padding: 12px;
-    color: #fff;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    color: var(--secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid transparent;
 }
 
 .admin-sidebar nav a:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--primary);
+    color: #fff;
+    transform: translateX(4px);
 }
 
 .admin-sidebar nav a.is-active {
-    background: rgba(255, 255, 255, 0.18);
-    font-weight: 700;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 106, 0, 0.4);
+    border-color: var(--primary);
 }
 
 .admin-content {
     padding: 32px;
+    overflow-y: auto;
 }
 
 .admin-topline {
@@ -1211,8 +1530,14 @@ textarea {
     margin-top: 24px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 22px;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.admin-panel:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .admin-panel h2 {
@@ -1229,10 +1554,17 @@ textarea {
 .admin-kpi-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px;
+    border-radius: var(--radius-lg);
+    padding: 20px;
     display: grid;
-    gap: 8px;
+    gap: 10px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.admin-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .admin-kpi-card span {
@@ -1242,7 +1574,8 @@ textarea {
 
 .admin-kpi-card strong {
     color: var(--secondary);
-    font-size: 1.55rem;
+    font-size: 1.65rem;
+    font-weight: 700;
 }
 
 .admin-chart-grid,
@@ -1316,38 +1649,6 @@ textarea {
     color: #fff;
     text-decoration: underline;
     text-underline-offset: 3px;
-}
-
-.chart-placeholder {
-    height: 260px;
-    display: flex;
-    align-items: end;
-    gap: 16px;
-    padding: 20px;
-    border-radius: 8px;
-    background: #eef2f6;
-}
-
-.chart-placeholder span {
-    flex: 1;
-    min-width: 26px;
-    border-radius: 6px 6px 0 0;
-    background: var(--primary);
-}
-
-.chart-placeholder--labeled span {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.chart-placeholder--labeled em {
-    position: absolute;
-    bottom: -24px;
-    color: var(--muted);
-    font-style: normal;
-    font-size: 0.82rem;
 }
 
 .status-grid {
@@ -1481,8 +1782,9 @@ textarea {
     top: 16px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 .account-menu__title {
@@ -1498,11 +1800,15 @@ textarea {
     padding: 14px 16px;
     border-bottom: 1px solid var(--border);
     color: var(--secondary);
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
 .account-menu a.is-active,
 .account-menu a:hover {
     color: var(--primary);
+    background: var(--primary-light);
+    padding-left: 20px;
 }
 
 .account-content,
@@ -1517,8 +1823,9 @@ textarea {
 .order-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 22px;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
 }
 
 .profile-hero {
@@ -1531,13 +1838,14 @@ textarea {
 .profile-avatar {
     display: grid;
     place-items: center;
-    width: 84px;
-    height: 84px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    background: #e8f1ff;
-    color: var(--secondary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
     font-size: 2rem;
     font-weight: 800;
+    box-shadow: var(--shadow-md);
 }
 
 .profile-hero h1,
@@ -1676,9 +1984,15 @@ textarea {
     background: var(--surface);
     border: 1px solid var(--border);
     border-top: 4px solid var(--primary);
-    border-radius: 8px;
-    padding: 18px;
-    box-shadow: var(--shadow);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.customer-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .customer-stat strong {
@@ -1704,9 +2018,17 @@ textarea {
 .coupon-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.customer-product-card:hover,
+.address-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
 }
 
 .customer-product-card img {
@@ -1776,8 +2098,14 @@ textarea {
 .settings-box {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.settings-box:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .settings-box h2 {

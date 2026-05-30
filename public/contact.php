@@ -56,7 +56,7 @@ include __DIR__ . '/../app/includes/header.php';
         </form>
         <aside class="summary-panel">
             <h2>Customer Support</h2>
-            <p><span>Phone</span><strong>+255 700 000 000</strong></p>
+            <p><span>Phone</span><strong>+255 757 742 486</strong></p>
             <p><span>Email</span><strong>support@darfashion.store</strong></p>
             <p><span>Location</span><strong>Dar es Salaam</strong></p>
         </aside>

@@ -23,6 +23,83 @@ if ($conn) {
         ];
     }
 }
+
+$adminPage = 'settings';
+$adminRoot = '../';
 ?>
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Settings</title><link rel="stylesheet" href="../../assets/css/style.css"><link rel="stylesheet" href="../../assets/css/responsive.css"></head>
-<body><main class="section"><div class="container"><div class="section-heading"><p class="section-kicker">Admin</p><h1>Settings</h1></div><section class="admin-panel"><h2>Store Settings</h2><div class="cart-table"><div class="cart-row cart-row--head"><span>Setting</span><span>Value</span><span>Area</span><span>Status</span><span>Updated</span></div><?php foreach ($settings as $setting): ?><div class="cart-row"><span><?php echo htmlspecialchars($setting['setting_key']); ?></span><span><?php echo htmlspecialchars($setting['setting_value']); ?></span><span>Store</span><span>Active</span><span><?php echo htmlspecialchars(date('M d, Y', strtotime($setting['updated_at']))); ?></span></div><?php endforeach; ?></div></section><section class="admin-panel"><h2>Delivery Fees per Region</h2><div class="cart-table"><div class="cart-row cart-row--head"><span>Region</span><span>Fee</span><span>ETA</span><span>Method</span><span>Status</span></div><?php foreach ($regions as $region): ?><div class="cart-row"><span><?php echo htmlspecialchars($region['region_name']); ?></span><span>TZS <?php echo number_format((float) $region['delivery_fee'], 0); ?></span><span><?php echo htmlspecialchars($region['estimated_days']); ?></span><span><?php echo htmlspecialchars($region['delivery_method']); ?></span><span>Active</span></div><?php endforeach; ?></div></section><p><a href="../dashboard.php">Back to dashboard</a></p></div></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Settings | Dar Fashion Store Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+<main class="admin-shell">
+    <?php include __DIR__ . '/../../app/includes/admin-sidebar.php'; ?>
+    <section class="admin-content">
+        <header class="admin-page-header">
+            <div>
+                <p class="section-kicker">Configuration</p>
+                <h1>Store Settings</h1>
+                <p>Manage store configuration and delivery regions.</p>
+            </div>
+            <div class="admin-page-actions">
+                <a class="button button--primary" href="../dashboard.php">Dashboard</a>
+            </div>
+        </header>
+
+        <div class="admin-grid-two">
+            <section class="admin-panel" style="margin-top: 0;">
+                <h2>Store Settings</h2>
+                <p style="color: var(--muted); margin-bottom: 16px;">Configure store-wide settings and preferences.</p>
+                <div class="cart-table">
+                    <div class="cart-row cart-row--head">
+                        <span>Setting</span>
+                        <span>Value</span>
+                        <span>Area</span>
+                        <span>Status</span>
+                        <span>Updated</span>
+                    </div>
+                    <?php foreach ($settings as $setting): ?>
+                        <div class="cart-row">
+                            <span><strong><?php echo htmlspecialchars($setting['setting_key']); ?></strong></span>
+                            <span><?php echo htmlspecialchars($setting['setting_value']); ?></span>
+                            <span>Store</span>
+                            <span><span style="color: #13795b; font-weight: 600;">Active</span></span>
+                            <span><?php echo htmlspecialchars(date('M d, Y', strtotime($setting['updated_at']))); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+
+            <section class="admin-panel" style="margin-top: 0;">
+                <h2>Delivery Fees per Region</h2>
+                <p style="color: var(--muted); margin-bottom: 16px;">Configure delivery fees and estimated delivery times.</p>
+                <div class="cart-table">
+                    <div class="cart-row cart-row--head">
+                        <span>Region</span>
+                        <span>Fee</span>
+                        <span>ETA</span>
+                        <span>Method</span>
+                        <span>Status</span>
+                    </div>
+                    <?php foreach ($regions as $region): ?>
+                        <div class="cart-row">
+                            <span><strong><?php echo htmlspecialchars($region['region_name']); ?></strong></span>
+                            <span style="color: var(--primary); font-weight: 600;">TZS <?php echo number_format((float) $region['delivery_fee'], 0); ?></span>
+                            <span><?php echo htmlspecialchars($region['estimated_days']); ?></span>
+                            <span><?php echo htmlspecialchars($region['delivery_method']); ?></span>
+                            <span><span style="color: #13795b; font-weight: 600;">Active</span></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+</body>
+</html>

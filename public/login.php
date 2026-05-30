@@ -29,13 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($user) {
                 login_user($user);
-                
+
+                // Sync session cart to DB and load DB cart into session
+                require_once __DIR__ . '/../app/models/Cart.php';
+                $cartModel = new Cart();
+                $cartModel->syncSessionToDb($conn, $user['id']);
+                $cartModel->loadDbToSession($conn, $user['id']);
+
                 // Log login activity
                 $activityLog = new ActivityLog($conn);
                 $activityLog->log($user['id'], 'login', [
                     'details' => ['ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown']
                 ]);
-                
+
                 header('Location: ' . post_login_redirect($user));
                 exit;
             }

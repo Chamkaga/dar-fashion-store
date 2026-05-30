@@ -33,7 +33,7 @@
             <p class="social-links">
                 <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
                 <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
-                <a href="https://wa.me/255700000000" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="https://wa.me/255757742486" target="_blank" rel="noopener">WhatsApp</a>
             </p>
         </section>
     </div>

@@ -138,69 +138,168 @@ $adminRoot = '';
     <section class="admin-content">
         <header class="admin-page-header">
             <div>
-                <p class="section-kicker">Overview</p>
-                <h1>Welcome, <?php echo htmlspecialchars($adminUser['fullname'] ?? 'Admin'); ?></h1>
-                <p>Business snapshot for Dar Fashion Store — <?php echo date('l, F j, Y'); ?>. Admin tools are separate from customer self-service accounts.</p>
+                <p class="section-kicker">Business Overview</p>
+                <h1>Welcome back, <?php echo htmlspecialchars($adminUser['fullname'] ?? 'Admin'); ?></h1>
+                <p>Real-time business insights for Dar Fashion Store — <?php echo date('l, F j, Y'); ?>. Manage your store operations efficiently.</p>
             </div>
             <div class="admin-page-actions">
-                <a class="button button--secondary" href="profile.php">My Admin Account</a>
-                <a class="button button--primary" href="../public/index.php">View Storefront</a>
+                <a class="button button--secondary" href="profile.php">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    My Account
+                </a>
+                <a class="button button--primary" href="../public/index.php">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    View Store
+                </a>
             </div>
         </header>
 
         <nav class="admin-quick-actions" aria-label="Quick actions">
-            <a href="users/index.php">Users & Accounts</a>
-            <a href="orders/index.php">Orders</a>
-            <a href="products/index.php">Products</a>
-            <a href="inventory/index.php">Inventory</a>
-            <a href="messages/index.php">Messages</a>
-            <a href="reports/index.php">Reports</a>
+            <a href="users/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Users & Accounts
+            </a>
+            <a href="orders/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Orders
+            </a>
+            <a href="products/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                Products
+            </a>
+            <a href="inventory/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                Inventory
+            </a>
+            <a href="messages/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Messages
+            </a>
+            <a href="reports/index.php">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Reports
+            </a>
         </nav>
 
-        <p class="admin-section-title">Key metrics</p>
+        <p class="admin-section-title">Key Performance Metrics</p>
         <div class="admin-kpi-grid">
             <?php foreach ($primaryStats as $stat): ?>
                 <article class="admin-kpi-card <?php echo htmlspecialchars($stat['class']); ?>">
-                    <span><?php echo htmlspecialchars($stat['label']); ?></span>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span><?php echo htmlspecialchars($stat['label']); ?></span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary); opacity: 0.3;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
                     <strong><?php echo htmlspecialchars($stat['value']); ?></strong>
                 </article>
             <?php endforeach; ?>
         </div>
 
-        <div class="admin-kpi-grid" style="margin-top: 14px;">
+        <div class="admin-kpi-grid" style="margin-top: 18px;">
             <?php foreach ($secondaryStats as $stat): ?>
                 <article class="admin-kpi-card">
-                    <span><?php echo htmlspecialchars($stat['label']); ?></span>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span><?php echo htmlspecialchars($stat['label']); ?></span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted); opacity: 0.4;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </div>
                     <strong><?php echo htmlspecialchars($stat['value']); ?></strong>
                 </article>
             <?php endforeach; ?>
         </div>
 
-        <p class="admin-section-title">Analytics</p>
+        <p class="admin-section-title">Analytics & Insights</p>
         <section class="admin-chart-grid">
-            <article class="admin-panel"><h2>Sales per Month</h2><canvas id="salesByMonth" height="120"></canvas></article>
-            <article class="admin-panel"><h2>Payment Methods</h2><canvas id="paymentMethods" height="120"></canvas></article>
-            <article class="admin-panel admin-panel--wide"><h2>Daily Sales Trend</h2><canvas id="salesTrend" height="100"></canvas></article>
-            <article class="admin-panel"><h2>Top Products</h2><canvas id="topProducts" height="120"></canvas></article>
-            <article class="admin-panel"><h2>Revenue by Category</h2><canvas id="revenueByCategory" height="120"></canvas></article>
+            <article class="admin-panel">
+                <div class="section-heading section-heading--row">
+                    <h2>Sales Overview</h2>
+                    <span style="font-size: 0.85rem; color: var(--muted);">Monthly Performance</span>
+                </div>
+                <canvas id="salesByMonth" height="120"></canvas>
+            </article>
+            <article class="admin-panel">
+                <div class="section-heading section-heading--row">
+                    <h2>Payment Methods</h2>
+                    <span style="font-size: 0.85rem; color: var(--muted);">Distribution</span>
+                </div>
+                <canvas id="paymentMethods" height="120"></canvas>
+            </article>
+            <article class="admin-panel admin-panel--wide">
+                <div class="section-heading section-heading--row">
+                    <h2>Daily Sales Trend</h2>
+                    <span style="font-size: 0.85rem; color: var(--muted);">Last 14 Days</span>
+                </div>
+                <canvas id="salesTrend" height="100"></canvas>
+            </article>
+            <article class="admin-panel">
+                <div class="section-heading section-heading--row">
+                    <h2>Top Products</h2>
+                    <span style="font-size: 0.85rem; color: var(--muted);">Best Sellers</span>
+                </div>
+                <canvas id="topProducts" height="120"></canvas>
+            </article>
+            <article class="admin-panel">
+                <div class="section-heading section-heading--row">
+                    <h2>Revenue by Category</h2>
+                    <span style="font-size: 0.85rem; color: var(--muted);">Performance</span>
+                </div>
+                <canvas id="revenueByCategory" height="120"></canvas>
+            </article>
         </section>
 
-        <p class="admin-section-title">Operations</p>
+        <p class="admin-section-title">Operations Management</p>
         <section class="admin-grid-two">
             <article class="admin-panel" style="margin-top: 0;">
                 <div class="section-heading section-heading--row">
-                    <h2>Recent Orders</h2>
-                    <a href="orders/index.php">View all</a>
+                    <div>
+                        <h2>Recent Orders</h2>
+                        <span style="font-size: 0.85rem; color: var(--muted);">Latest transactions</span>
+                    </div>
+                    <a href="orders/index.php" class="button button--secondary" style="padding: 8px 16px; min-height: 36px; font-size: 0.85rem;">View All</a>
                 </div>
                 <?php if ($recentOrders): ?>
                     <div class="cart-table">
                         <div class="cart-row cart-row--head"><span>Order</span><span>Customer</span><span>Status</span><span>Total</span></div>
                         <?php foreach ($recentOrders as $order): ?>
                             <div class="cart-row">
-                                <span><a href="orders/view.php?id=<?php echo (int) $order['id']; ?>"><?php echo htmlspecialchars($order['order_number']); ?></a></span>
+                                <span><a href="orders/view.php?id=<?php echo (int) $order['id']; ?>" style="color: var(--primary); font-weight: 600;"><?php echo htmlspecialchars($order['order_number']); ?></a></span>
                                 <span><?php echo htmlspecialchars($order['customer_name']); ?></span>
-                                <span><?php echo htmlspecialchars(ucfirst($order['status'])); ?></span>
-                                <span>TZS <?php echo number_format((float) $order['total'], 0); ?></span>
+                                <span><span class="status-pill status-pill--<?php echo htmlspecialchars($order['status']); ?>"><?php echo htmlspecialchars(ucfirst($order['status'])); ?></span></span>
+                                <span style="font-weight: 600;">TZS <?php echo number_format((float) $order['total'], 0); ?></span>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -210,35 +309,47 @@ $adminRoot = '';
             </article>
 
             <article class="admin-panel" style="margin-top: 0;">
-                <h2>Low Stock Alerts</h2>
+                <div class="section-heading section-heading--row">
+                    <div>
+                        <h2>Low Stock Alerts</h2>
+                        <span style="font-size: 0.85rem; color: var(--muted);">Items needing attention</span>
+                    </div>
+                    <a href="inventory/index.php" class="button button--secondary" style="padding: 8px 16px; min-height: 36px; font-size: 0.85rem;">Manage</a>
+                </div>
                 <?php if ($lowStock): ?>
                     <div class="admin-alert-list">
                         <?php foreach ($lowStock as $product): ?>
-                            <p><span><?php echo htmlspecialchars($product['name']); ?></span><strong style="color: var(--primary);"><?php echo (int) $product['stock_quantity']; ?> left</strong></p>
+                            <p style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                                <span style="font-weight: 500;"><?php echo htmlspecialchars($product['name']); ?></span>
+                                <strong style="color: var(--error); background: var(--error-light); padding: 4px 12px; border-radius: 999px; font-size: 0.85rem;"><?php echo (int) $product['stock_quantity']; ?> left</strong>
+                            </p>
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <p class="empty-state">Stock levels look healthy.</p>
+                    <p class="empty-state" style="color: var(--success); background: var(--success-light); border-color: var(--success);">✓ Stock levels healthy</p>
                 <?php endif; ?>
-                <p style="margin-top: 14px;"><a href="inventory/index.php">Open inventory →</a></p>
             </article>
         </section>
 
         <section class="admin-grid-two">
             <article class="admin-panel" style="margin-top: 0;">
                 <div class="section-heading section-heading--row">
-                    <h2>Online Now</h2>
-                    <a href="users/index.php">Manage users</a>
+                    <div>
+                        <h2>Online Users</h2>
+                        <span style="font-size: 0.85rem; color: var(--muted);">Active sessions</span>
+                    </div>
+                    <a href="users/index.php" class="button button--secondary" style="padding: 8px 16px; min-height: 36px; font-size: 0.85rem;">Manage</a>
                 </div>
                 <?php if ($onlineUsers): ?>
                     <div class="admin-alert-list">
                         <?php foreach ($onlineUsers as $user): ?>
-                            <p>
-                                <span>
+                            <p style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                                <span style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></div>
                                     <strong><?php echo htmlspecialchars($user['fullname']); ?></strong>
                                     <span class="admin-role-badge <?php echo htmlspecialchars($user['role'] ?? 'customer'); ?>" style="margin-left: 6px;"><?php echo htmlspecialchars($user['role'] ?? 'customer'); ?></span>
                                 </span>
-                                <a href="users/index.php?id=<?php echo (int) $user['id']; ?>">View</a>
+                                <a href="users/index.php?id=<?php echo (int) $user['id']; ?>" style="color: var(--primary); font-weight: 600; font-size: 0.85rem;">View</a>
                             </p>
                         <?php endforeach; ?>
                     </div>
@@ -249,18 +360,21 @@ $adminRoot = '';
 
             <article class="admin-panel" style="margin-top: 0;">
                 <div class="section-heading section-heading--row">
-                    <h2>Live Activity</h2>
-                    <a href="activities/index.php">Full log</a>
+                    <div>
+                        <h2>Live Activity Feed</h2>
+                        <span style="font-size: 0.85rem; color: var(--muted);">Real-time actions</span>
+                    </div>
+                    <a href="activities/index.php" class="button button--secondary" style="padding: 8px 16px; min-height: 36px; font-size: 0.85rem;">Full Log</a>
                 </div>
                 <?php if ($recentActivities): ?>
                     <div class="admin-activity-feed">
                         <?php foreach ($recentActivities as $activity): ?>
-                            <div class="admin-activity-item">
-                                <span>
-                                    <strong><?php echo htmlspecialchars($activity['fullname']); ?></strong>
-                                    <span class="admin-activity-tag"><?php echo htmlspecialchars($activityLabels[$activity['activity_type']] ?? $activity['activity_type']); ?></span>
+                            <div class="admin-activity-item" style="display: flex; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--border-light); border-radius: var(--radius); background: var(--background); font-size: 0.88rem;">
+                                <span style="display: flex; align-items: center; gap: 10px;">
+                                    <strong style="color: var(--secondary);"><?php echo htmlspecialchars($activity['fullname']); ?></strong>
+                                    <span class="admin-activity-tag" style="display: inline-block; margin-right: 6px; padding: 3px 10px; border-radius: 4px; background: var(--primary-light); color: var(--primary); font-size: 0.75rem; font-weight: 700;"><?php echo htmlspecialchars($activityLabels[$activity['activity_type']] ?? $activity['activity_type']); ?></span>
                                 </span>
-                                <small style="color: var(--muted);"><?php echo date('H:i', strtotime($activity['created_at'])); ?></small>
+                                <small style="color: var(--muted); font-size: 0.8rem;"><?php echo date('H:i', strtotime($activity['created_at'])); ?></small>
                             </div>
                         <?php endforeach; ?>
                     </div>
