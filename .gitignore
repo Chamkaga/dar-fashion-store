@@ -1,3 +1,5 @@
 .env
 logs/*.tmp
 logs/
+
+dar-fashion-store/
