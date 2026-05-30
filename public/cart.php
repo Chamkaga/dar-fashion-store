@@ -15,6 +15,73 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+// Quick product add from cards and listing buttons
+if (isset($_GET['add']) && $productModel) {
+    $productId = (int) $_GET['add'];
+    if ($productId > 0) {
+        $product = $productModel->getById($productId);
+        if ($product) {
+            $variantModel = new ProductVariant($conn);
+            $variants = $variantModel->getByProduct($productId);
+
+            if (!empty($variants)) {
+                $selectedVariant = null;
+                foreach ($variants as $variant) {
+                    if ((int) $variant['stock_quantity'] > 0) {
+                        $selectedVariant = $variant;
+                        break;
+                    }
+                }
+
+                if ($selectedVariant === null) {
+                    $_SESSION['cart_error'] = 'This product has no variants in stock right now.';
+                } else {
+                    $key = 'v' . (int) $selectedVariant['id'];
+                    if (!isset($_SESSION['cart'][$key])) {
+                        $_SESSION['cart'][$key] = [
+                            'product_id' => $productId,
+                            'variant_id' => (int) $selectedVariant['id'],
+                            'qty' => 1,
+                            'unit_price' => $selectedVariant['price'] ?: $product['price'],
+                            'color' => $selectedVariant['color'],
+                            'size' => $selectedVariant['size']
+                        ];
+                    } else {
+                        $_SESSION['cart'][$key]['qty'] += 1;
+                    }
+                    $_SESSION['cart_message'] = 'Product added to cart.';
+
+                    if (is_logged_in()) {
+                        $user = current_user();
+                        $activityLog = new ActivityLog($conn);
+                        $activityLog->log($user['id'], 'add_to_cart', [
+                            'product_id' => $productId,
+                            'details' => ['quantity' => 1, 'variant_id' => (int) $selectedVariant['id']]
+                        ]);
+                    }
+                }
+            } else {
+                $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?? 0) + 1;
+                $_SESSION['cart_message'] = 'Product added to cart.';
+
+                if (is_logged_in()) {
+                    $user = current_user();
+                    $activityLog = new ActivityLog($conn);
+                    $activityLog->log($user['id'], 'add_to_cart', [
+                        'product_id' => $productId,
+                        'details' => ['quantity' => 1]
+                    ]);
+                }
+            }
+        } else {
+            $_SESSION['cart_error'] = 'Could not add the selected product. Please try again.';
+        }
+    }
+
+    header('Location: cart.php');
+    exit;
+}
+
 // Handle variant-based POST add
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $productModel) {
     $productId = (int) ($_POST['product_id'] ?? 0);
@@ -42,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $productModel) {
                 } else {
                     $_SESSION['cart'][$key]['qty'] += $qty;
                 }
+                $_SESSION['cart_message'] = 'Product added to cart.';
 
                 // Log add to cart activity
                 if (is_logged_in()) {
@@ -53,12 +121,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $productModel) {
                     ]);
                 }
             }
+        } else {
+            $_SESSION['cart_error'] = 'Selected product variant was not found.';
         }
     } else {
         // Legacy product add via POST
         $product = $productModel->getById($productId);
         if ($product) {
             $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?? 0) + $qty;
+            $_SESSION['cart_message'] = 'Product added to cart.';
+
+            if (is_logged_in()) {
+                $user = current_user();
+                $activityLog = new ActivityLog($conn);
+                $activityLog->log($user['id'], 'add_to_cart', [
+                    'product_id' => $productId,
+                    'details' => ['quantity' => $qty]
+                ]);
+            }
         }
     }
 
@@ -161,6 +241,14 @@ $total = $subtotal + $deliveryFee;
                 <p class="section-kicker">Shopping cart</p>
                 <h1>Your selected items</h1>
             </div>
+            <?php if (!empty($_SESSION['cart_error'])): ?>
+                <p class="alert alert--error"><?php echo htmlspecialchars($_SESSION['cart_error']); ?></p>
+                <?php unset($_SESSION['cart_error']); ?>
+            <?php endif; ?>
+            <?php if (!empty($_SESSION['cart_message'])): ?>
+                <p class="alert alert--success"><?php echo htmlspecialchars($_SESSION['cart_message']); ?></p>
+                <?php unset($_SESSION['cart_message']); ?>
+            <?php endif; ?>
             <div class="cart-table">
                 <div class="cart-row cart-row--head"><span>Product</span><span>Qty</span><span>Price</span><span>Total</span><span>Remove</span></div>
                 <?php foreach ($cartItems as $item): ?>

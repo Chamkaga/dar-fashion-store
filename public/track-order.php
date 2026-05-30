@@ -169,7 +169,62 @@ $etaLabel = $etaDays <= 1 ? '1 day' : ($etaDays . '–' . ($etaDays + 2) . ' day
         <?php endif; ?>
     <?php elseif ($order && $timeline['cancelled']): ?>
         <section class="container section">
+            <div class="tracking-hero">
+                <div>
+                    <p class="section-kicker">Delivery progress</p>
+                    <h2>Order cancelled</h2>
+                    <p>This order was cancelled by the store. If you have questions, contact support.</p>
+                </div>
+                <div class="tracking-progress-bar" aria-hidden="true">
+                    <span style="width: 0%;"></span>
+                </div>
+            </div>
             <p class="alert alert--error">This order was cancelled.</p>
+
+            <ol class="delivery-timeline">
+                <?php foreach ($timeline['steps'] as $item):
+                    $step = $item['step'];
+                    $event = $item['event'];
+                    $state = $item['state'];
+                ?>
+                    <li class="delivery-timeline__item delivery-timeline__item--<?php echo htmlspecialchars($state); ?>">
+                        <div class="delivery-timeline__marker"><?php echo htmlspecialchars($step['icon']); ?></div>
+                        <article class="delivery-timeline__card">
+                            <div class="delivery-timeline__head">
+                                <h3><?php echo htmlspecialchars($step['label']); ?></h3>
+                                <span class="delivery-timeline__badge"><?php echo htmlspecialchars(ucfirst($state)); ?></span>
+                            </div>
+                            <p class="delivery-timeline__summary"><?php echo htmlspecialchars($step['summary']); ?></p>
+                            <p><strong>What you see:</strong> <?php echo htmlspecialchars($event['description'] ?? $step['customer']); ?></p>
+                            <p class="delivery-timeline__activity"><strong>Behind the scenes:</strong> <?php echo htmlspecialchars($event['activity_note'] ?? $step['activity']); ?></p>
+                            <?php if ($event && !empty($event['location'])): ?>
+                                <p class="delivery-timeline__location">Location: <?php echo htmlspecialchars($event['location']); ?></p>
+                            <?php endif; ?>
+                            <?php if ($event): ?>
+                                <time class="delivery-timeline__time"><?php echo date('M d, Y · H:i', strtotime($event['event_at'])); ?></time>
+                            <?php endif; ?>
+                        </article>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+
+            <?php if (!empty($timeline['events'])): ?>
+                <section class="container section section--soft">
+                    <div class="admin-panel" style="margin-top: 0;">
+                        <h2>Scan history</h2>
+                        <p>All recorded order activity before cancellation.</p>
+                        <div class="scan-history">
+                            <?php foreach ($timeline['events'] as $event): ?>
+                                <div class="scan-history__row">
+                                    <span><?php echo date('M d, H:i', strtotime($event['event_at'])); ?></span>
+                                    <strong><?php echo htmlspecialchars($event['title']); ?></strong>
+                                    <span><?php echo htmlspecialchars($event['location'] ?? ''); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </section>
+            <?php endif; ?>
         </section>
     <?php endif; ?>
 </main>

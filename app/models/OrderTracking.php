@@ -154,14 +154,13 @@ class OrderTracking {
         }
 
         $destination = $this->guessDestination($order['shipping_address'] ?? '');
-        $location = $order['delivery_company'] ?? '';
-
         $locations = [
             'picked_up' => 'Dar es Salaam — courier pickup',
             'in_transit' => 'En route to ' . $destination,
             'arrived_at_hub' => $destination . ' sorting facility',
             'out_for_delivery' => $destination . ' — out for delivery',
             'delivered' => $order['shipping_address'] ?? $destination,
+            'cancelled' => $order['shipping_address'] ?? 'Order cancelled',
         ];
 
         $payload = [
@@ -208,7 +207,27 @@ class OrderTracking {
 
         $status = $order['status'] ?? 'pending';
         if ($status === 'cancelled') {
-            return ['steps' => [], 'progress' => 0, 'cancelled' => true, 'events' => $events];
+            $cancelEvent = null;
+            foreach ($events as $event) {
+                if ($event['step_code'] === 'cancelled') {
+                    $cancelEvent = $event;
+                    break;
+                }
+            }
+            $cancelEvent = $cancelEvent ?: end($events) ?: null;
+
+            return [
+                'steps' => [
+                    [
+                        'step' => $this->getCancelledStep(),
+                        'event' => $cancelEvent,
+                        'state' => 'cancelled',
+                    ],
+                ],
+                'progress' => 0,
+                'cancelled' => true,
+                'events' => $events,
+            ];
         }
 
         $maxComplete = $this->maxCompletedStepIndex($status, $eventsByCode);
@@ -280,12 +299,29 @@ class OrderTracking {
     }
 
     private function findStep($code) {
+        if ($code === 'cancelled') {
+            return $this->getCancelledStep();
+        }
+
         foreach (self::journeySteps() as $step) {
             if ($step['code'] === $code) {
                 return $step;
             }
         }
         return null;
+    }
+
+    private function getCancelledStep() {
+        return [
+            'code' => 'cancelled',
+            'status' => 'cancelled',
+            'label' => 'Order Cancelled',
+            'icon' => '×',
+            'summary' => 'This order was cancelled and will not be delivered.',
+            'customer' => 'We are sorry, this order has been cancelled by the store.',
+            'activity' => 'The order was marked cancelled by admin.',
+            'default_location' => 'Order cancelled',
+        ];
     }
 
     private function statusToStepCode($status) {
@@ -297,6 +333,7 @@ class OrderTracking {
             'in_transit' => 'in_transit',
             'out_for_delivery' => 'out_for_delivery',
             'delivered' => 'delivered',
+            'cancelled' => 'cancelled',
         ];
         return $map[$status] ?? null;
     }
