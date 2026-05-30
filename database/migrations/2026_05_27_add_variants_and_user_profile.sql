@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS users_backup AS SELECT * FROM users WHERE 0;
 
 -- 2) Create product_variants table
 CREATE TABLE IF NOT EXISTS product_variants (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    product_id INT UNSIGNED NOT NULL,
     sku VARCHAR(100) DEFAULT NULL,
     color VARCHAR(100) DEFAULT NULL,
     size VARCHAR(100) DEFAULT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS product_variants (
 -- 3) Create product_variant_images table for additional images per variant
 CREATE TABLE IF NOT EXISTS product_variant_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    variant_id INT NOT NULL,
+    variant_id INT UNSIGNED NOT NULL,
     image_url TEXT,
     sort_order INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -45,7 +45,7 @@ FROM products;
 
 -- 5) Update order_items to reference variant data and keep legacy product_id
 ALTER TABLE order_items 
-    ADD COLUMN variant_id INT NULL AFTER product_id,
+    ADD COLUMN variant_id INT UNSIGNED NULL AFTER product_id,
     ADD COLUMN unit_price DECIMAL(12,2) NULL AFTER price,
     ADD COLUMN sku VARCHAR(120) NULL AFTER unit_price,
     ADD COLUMN selected_color VARCHAR(100) NULL AFTER sku,

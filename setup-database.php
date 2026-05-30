@@ -23,46 +23,52 @@ try {
     // Select the database
     $pdo->exec("USE `$dbname`");
     echo "Database selected.<br>";
-    
-    // Read and execute the SQL file
-    $sqlFile = __DIR__ . '/database/ecommerce.sql';
-    if (file_exists($sqlFile)) {
-        $sql = file_get_contents($sqlFile);
-        
-        // Remove comments and execute the full SQL
+
+    function executeSqlFile(PDO $pdo, string $filePath) {
+        if (!file_exists($filePath)) {
+            echo "SQL file not found: $filePath<br>";
+            return;
+        }
+
+        $sql = file_get_contents($filePath);
         $lines = explode("\n", $sql);
         $statement = '';
-        
+
         foreach ($lines as $line) {
             $line = trim($line);
-            
-            // Skip empty lines and comments
             if (empty($line) || substr($line, 0, 2) === '--') {
                 continue;
             }
-            
+
             $statement .= ' ' . $line;
-            
-            // Execute when we hit a semicolon
             if (substr($line, -1) === ';') {
                 $statement = trim($statement);
                 if (!empty($statement)) {
                     try {
                         $pdo->exec($statement);
                     } catch (PDOException $e) {
-                        // Log but don't fail on harmless errors
                         echo "Warning: " . $e->getMessage() . "<br>";
                     }
                 }
                 $statement = '';
             }
         }
-        
-        echo "Database structure created successfully.<br>";
-    } else {
-        echo "SQL file not found: $sqlFile<br>";
     }
-    
+
+    // Read and execute the main schema SQL file
+    $sqlFile = __DIR__ . '/database/ecommerce.sql';
+    executeSqlFile($pdo, $sqlFile);
+    echo "Database structure created successfully.<br>";
+
+    // Apply database migrations to ensure all tables exist
+    $migrationFiles = glob(__DIR__ . '/database/migrations/*.sql');
+    sort($migrationFiles);
+    foreach ($migrationFiles as $migrationFile) {
+        echo "Applying migration: " . basename($migrationFile) . "<br>";
+        executeSqlFile($pdo, $migrationFile);
+    }
+    echo "Database migrations applied successfully.<br>\n";
+
     // Insert sample data
     echo "<br>Inserting sample data...<br>";
     
