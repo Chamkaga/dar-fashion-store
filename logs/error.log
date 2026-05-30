@@ -276,3 +276,37 @@ Stack trace:
 #1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\product.php(38): Product->getVariants()
 #2 {main}
   thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Product.php on line 149
+[30-May-2026 07:36:24 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'fashion_storedb.user_cart_items' doesn't exist in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php:75
+Stack trace:
+#0 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php(75): PDOStatement->execute()
+#1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\login.php(37): Cart->loadDbToSession()
+#2 {main}
+  thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php on line 75
+[30-May-2026 07:38:49 UTC] Get recent activities error: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''8'' at line 18
+[30-May-2026 07:38:49 UTC] Get online users error: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column 'fashion_storedb.ua.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+[30-May-2026 07:38:57 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'fashion_storedb.user_cart_items' doesn't exist in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php:75
+Stack trace:
+#0 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php(75): PDOStatement->execute()
+#1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\login.php(37): Cart->loadDbToSession()
+#2 {main}
+  thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php on line 75
+[30-May-2026 07:39:31 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'fashion_storedb.user_cart_items' doesn't exist in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php:75
+Stack trace:
+#0 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php(75): PDOStatement->execute()
+#1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\login.php(37): Cart->loadDbToSession()
+#2 {main}
+  thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php on line 75
+[30-May-2026 07:43:02 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'fashion_storedb.user_cart_items' doesn't exist in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php:75
+Stack trace:
+#0 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php(75): PDOStatement->execute()
+#1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\login.php(37): Cart->loadDbToSession()
+#2 {main}
+  thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php on line 75
+[30-May-2026 07:43:40 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'fashion_storedb.user_cart_items' doesn't exist in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php:75
+Stack trace:
+#0 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php(75): PDOStatement->execute()
+#1 C:\Users\denis\OneDrive\Desktop\dar-fashion-store\public\login.php(37): Cart->loadDbToSession()
+#2 {main}
+  thrown in C:\Users\denis\OneDrive\Desktop\dar-fashion-store\app\models\Cart.php on line 75
+[30-May-2026 07:45:07 UTC] Get recent activities error: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''8'' at line 18
+[30-May-2026 07:45:07 UTC] Get online users error: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column 'fashion_storedb.ua.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by

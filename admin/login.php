@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($error): ?>
                 <p class="alert alert--error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
-            <p class="form-hint">Demo admin: admin@darfashion.store / password123</p>
+            <p class="form-hint">Demo admin: admin@fashionstore.com / admin123</p>
             <label>Email<input type="email" name="email" required></label>
             <label>Password<input type="password" name="password" required></label>
             <button class="button button--primary" type="submit">Login</button>

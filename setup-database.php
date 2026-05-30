@@ -7,7 +7,7 @@
 $host = 'localhost';
 $dbname = 'fashion_storedb';
 $username = 'root';
-$password = '';
+$password = 'Chamkaga@2025';
 
 try {
     // Connect to MySQL server
@@ -29,22 +29,35 @@ try {
     if (file_exists($sqlFile)) {
         $sql = file_get_contents($sqlFile);
         
-        // Split SQL into individual statements
-        $statements = explode(';', $sql);
+        // Remove comments and execute the full SQL
+        $lines = explode("\n", $sql);
+        $statement = '';
         
-        foreach ($statements as $statement) {
-            $statement = trim($statement);
-            if (!empty($statement) && !preg_match('/^--/', $statement)) {
-                try {
-                    $pdo->exec($statement);
-                } catch (PDOException $e) {
-                    // Ignore errors for statements that might fail (like DROP IF EXISTS)
-                    if (strpos($e->getMessage(), 'Table') === false) {
-                        echo "Error executing statement: " . $e->getMessage() . "<br>";
+        foreach ($lines as $line) {
+            $line = trim($line);
+            
+            // Skip empty lines and comments
+            if (empty($line) || substr($line, 0, 2) === '--') {
+                continue;
+            }
+            
+            $statement .= ' ' . $line;
+            
+            // Execute when we hit a semicolon
+            if (substr($line, -1) === ';') {
+                $statement = trim($statement);
+                if (!empty($statement)) {
+                    try {
+                        $pdo->exec($statement);
+                    } catch (PDOException $e) {
+                        // Log but don't fail on harmless errors
+                        echo "Warning: " . $e->getMessage() . "<br>";
                     }
                 }
+                $statement = '';
             }
         }
+        
         echo "Database structure created successfully.<br>";
     } else {
         echo "SQL file not found: $sqlFile<br>";

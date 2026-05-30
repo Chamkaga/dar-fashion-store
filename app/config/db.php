@@ -13,7 +13,7 @@ class Database {
         $this->host = app_env('DB_HOST', 'localhost');
         $this->db_name = app_env('DB_NAME', 'fashion_storedb');
         $this->username = app_env('DB_USER', 'root');
-        $this->password = app_env('DB_PASSWORD', '');
+        $this->password = app_env('DB_PASSWORD', 'Chamkaga@2025');
     }
 
     public function connect() {
